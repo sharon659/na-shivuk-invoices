@@ -28,13 +28,14 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
 .api-strip.saved{border-color:var(--green-b);background:var(--green-l);}
 .api-lbl{font-weight:700;font-size:14px;color:var(--navy);white-space:nowrap;}
 .api-hint{font-size:11.5px;color:var(--muted);margin-top:2px;}
-.api-badge{display:inline-block;background:#4285f4;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin-right:6px;}
+.api-badge{display:inline-block;background:#f55036;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin-right:6px;}
 .api-inp-w{flex:1;min-width:240px;}
 .api-inp{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'Heebo',sans-serif;font-size:13px;direction:ltr;letter-spacing:.5px;outline:none;transition:border-color .2s;}
 .api-inp:focus{border-color:var(--teal);}
 .api-inp::placeholder{letter-spacing:0;color:var(--muted);}
 .btn-key{background:var(--navy);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
-.api-link{font-size:12px;color:#4285f4;text-decoration:none;white-space:nowrap;font-weight:600;}
+.api-link{font-size:12px;color:#f55036;text-decoration:none;white-space:nowrap;font-weight:600;}
+.api-link:hover{text-decoration:underline;}
 .upload-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
 .ucard{background:#fff;border-radius:var(--r);border:2px dashed #c8d3e8;padding:28px 24px;text-align:center;cursor:pointer;transition:all .2s;}
 .ucard:hover{border-color:var(--teal);transform:translateY(-1px);}
@@ -112,19 +113,19 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
       <div class="hdr-s">נ.א. שיווק תוצרת חקלאית בע"מ &nbsp;|&nbsp; כלי בקרה פנימי</div>
     </div>
   </div>
-  <div class="hdr-v">v4.0 · Gemini Free</div>
+  <div class="hdr-v">v5.0 · Groq Free</div>
 </header>
 <main class="main">
   <div class="api-strip" id="apiStrip">
     <div>
-      <div class="api-lbl"><span class="api-badge">FREE</span>מפתח Google Gemini API</div>
-      <div class="api-hint">חינם לחלוטין · ללא כרטיס אשראי · נשמר בדפדפן</div>
+      <div class="api-lbl"><span class="api-badge">FREE</span>מפתח Groq API</div>
+      <div class="api-hint">חינם לחלוטין · 14,400 בקשות ביום · נשמר בדפדפן</div>
     </div>
     <div class="api-inp-w">
-      <input class="api-inp" type="password" id="apiKey" placeholder="AIzaSy..." autocomplete="off" onkeydown="if(event.key==='Enter')saveKey()">
+      <input class="api-inp" type="password" id="apiKey" placeholder="gsk_..." autocomplete="off" onkeydown="if(event.key==='Enter')saveKey()">
     </div>
     <button class="btn-key" onclick="saveKey()">שמור</button>
-    <a class="api-link" href="https://aistudio.google.com/app/apikey" target="_blank">קבל מפתח חינמי ←</a>
+    <a class="api-link" href="https://console.groq.com/keys" target="_blank">קבל מפתח חינמי ←</a>
   </div>
   <div class="upload-row">
     <div class="ucard" id="drop1" onclick="document.getElementById('f1').click()">
@@ -151,7 +152,7 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
     <div class="load-card">
       <div class="spinner"></div>
       <div class="ld-t" id="ldTxt">מחלץ טקסט מהקבצים...</div>
-      <div class="ld-s">PDF.js קורא את המסמכים, Gemini משווה. 20–40 שניות.</div>
+      <div class="ld-s">PDF.js קורא את המסמכים, Groq AI משווה. 10–20 שניות.</div>
     </div>
   </div>
   <div id="divRes" style="display:none">
@@ -206,27 +207,22 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
   </div>
 </main>
 <script>
-// PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 const FILES={1:null,2:null};
 let RES=null;
 
 function initKey(){
-  const k=localStorage.getItem('gemini_key')||'';
+  const k=localStorage.getItem('groq_key')||'';
   if(k){document.getElementById('apiKey').value=k;setKeySaved();}
 }
 function saveKey(){
   const k=document.getElementById('apiKey').value.trim();
-  if(!k.startsWith('AIza')){alert('מפתח לא תקין — חייב להתחיל עם AIza');return;}
-  localStorage.setItem('gemini_key',k);
+  if(!k.startsWith('gsk_')){alert('מפתח לא תקין — חייב להתחיל עם gsk_');return;}
+  localStorage.setItem('groq_key',k);
   setKeySaved();
 }
-function setKeySaved(){
-  document.getElementById('apiStrip').classList.add('saved');
-  ready();
-}
-function key(){return localStorage.getItem('gemini_key')||document.getElementById('apiKey').value.trim();}
+function setKeySaved(){document.getElementById('apiStrip').classList.add('saved');ready();}
+function key(){return localStorage.getItem('groq_key')||document.getElementById('apiKey').value.trim();}
 
 function onFile(n,inp){
   const f=inp.files[0];if(!f)return;
@@ -235,19 +231,16 @@ function onFile(n,inp){
   document.getElementById('fn'+n).textContent='✓ '+f.name;
   ready();
 }
-function ready(){
-  document.getElementById('btnGo').disabled=!(FILES[1]&&FILES[2]&&key());
-}
+function ready(){document.getElementById('btnGo').disabled=!(FILES[1]&&FILES[2]&&key());}
 
-// Extract text from PDF using PDF.js
 async function extractText(file){
-  const ab = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({data:ab}).promise;
-  let text = '';
+  const ab=await file.arrayBuffer();
+  const pdf=await pdfjsLib.getDocument({data:ab}).promise;
+  let text='';
   for(let i=1;i<=pdf.numPages;i++){
-    const page = await pdf.getPage(i);
-    const content = await page.getTextContent();
-    text += content.items.map(s=>s.str).join(' ') + '\n';
+    const page=await pdf.getPage(i);
+    const content=await page.getTextContent();
+    text+=content.items.map(s=>s.str).join(' ')+'\n';
   }
   return text;
 }
@@ -335,51 +328,48 @@ async function run(){
   document.getElementById('divRes').style.display='none';
   document.getElementById('divErr').style.display='none';
   document.getElementById('btnGo').disabled=true;
-
   try{
     document.getElementById('ldTxt').textContent='מחלץ טקסט מהקבצים...';
     const [t1,t2]=await Promise.all([extractText(FILES[1]),extractText(FILES[2])]);
-
-    document.getElementById('ldTxt').textContent='Gemini משווה את המסמכים...';
+    document.getElementById('ldTxt').textContent='Groq AI משווה את המסמכים...';
 
     const prompt=`להלן שני מסמכים:
 
-=== מסמך 1: חשבונית ספק ===
-${t1}
+=== חשבונית ספק ===
+${t1.slice(0,6000)}
 
-=== מסמך 2: דוח תעודות משלוח ===
-${t2}
+=== דוח תעודות משלוח ===
+${t2.slice(0,6000)}
 
 ===
-כלל התאמת מספרי תעודות — הסר את הספרה הראשונה מהחשבונית:
-6914842 → 914842 | 7185198 → 185198 | 1627363 → 627363
+כלל מספרי תעודות — הסר ספרה ראשונה מהחשבונית:
+6914842→914842 | 7185198→185198 | 1627363→627363
 
-עבור כל שורת פריט בחשבונית: מצא את התעודה בדוח, מצא את המוצר המתאים (שמות עשויים להיות שונים), והשווה: משקל, מחיר לק"ג, סכום כולל.
+עבור כל שורה בחשבונית: מצא תעודה בדוח, מצא מוצר מתאים, השווה משקל/מחיר/סכום.
 
-החזר JSON תקין בלבד — ללא markdown, ללא backticks:
-{"invoice_number":"","invoice_date":"","supplier":"","buyer":"","lines":[{"delivery_note_invoice":"","delivery_note_report":"","date":"","product_invoice":"","product_report":"","weight_invoice":0,"weight_report":0,"price_invoice":0,"price_report":0,"total_invoice":0,"total_report":0,"found_in_report":true,"weight_match":true,"price_match":true,"total_match":true,"status":"תקין","discrepancies":[]}]}
+החזר JSON בלבד, ללא markdown:
+{"invoice_number":"","invoice_date":"","supplier":"","buyer":"","lines":[{"delivery_note_invoice":"","delivery_note_report":"","date":"","product_invoice":"","product_report":"","weight_invoice":0,"weight_report":0,"price_invoice":0,"price_report":0,"total_invoice":0,"total_report":0,"found_in_report":true,"weight_match":true,"price_match":true,"total_match":true,"status":"תקין","discrepancies":[]}]}`;
 
-חוקים: status = תקין/שגוי/לא נמצא. discrepancies = מערך עברית. כלול כל שורה. ערכים מספריים = number.`;
-
-    const resp=await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${k}`,
-      {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          contents:[{parts:[{text:prompt}]}],
-          generationConfig:{temperature:0,maxOutputTokens:8192}
-        })
-      }
-    );
+    const resp=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+k},
+      body:JSON.stringify({
+        model:'llama-3.3-70b-versatile',
+        messages:[
+          {role:'system',content:'אתה מנהל חשבונות מקצועי. מחזיר JSON תקין בלבד, ללא markdown, ללא הסברים.'},
+          {role:'user',content:prompt}
+        ],
+        temperature:0,
+        max_tokens:8192
+      })
+    });
 
     const api=await resp.json();
     if(!resp.ok)throw new Error(api.error?.message||'HTTP '+resp.status);
-    const raw=api.candidates?.[0]?.content?.parts?.[0]?.text||'';
-    if(!raw)throw new Error('תגובה ריקה מ-Gemini');
+    const raw=api.choices?.[0]?.message?.content||'';
+    if(!raw)throw new Error('תגובה ריקה');
     const clean=raw.replace(/^```(?:json)?\s*/i,'').replace(/\s*```\s*$/i,'').trim();
     render(JSON.parse(clean));
-
   }catch(e){
     document.getElementById('divErr').style.display='block';
     document.getElementById('errMsg').textContent=e.message||'שגיאה לא ידועה';
