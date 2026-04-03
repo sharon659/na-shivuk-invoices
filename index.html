@@ -19,32 +19,26 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl;}
-
 .hdr{background:var(--navy);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:68px;border-bottom:3px solid var(--teal);box-shadow:0 2px 16px rgba(0,0,0,.2);}
 .hdr-l{display:flex;align-items:center;gap:14px;}
 .hdr-ico{width:40px;height:40px;background:linear-gradient(135deg,var(--teal),#06b6d4);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;}
 .hdr-t{color:#fff;font-size:17px;font-weight:700;}
 .hdr-s{color:rgba(255,255,255,.4);font-size:12px;margin-top:1px;}
 .hdr-v{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.45);font-size:11px;padding:4px 12px;border-radius:20px;}
-
 .main{max-width:1240px;margin:0 auto;padding:32px 32px 60px;}
-
-/* API KEY */
 .api-strip{background:#fff;border-radius:var(--r);border:2px solid #fcd34d;padding:18px 24px;margin-bottom:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;transition:border-color .3s,background .3s;}
 .api-strip.saved{border-color:var(--green-b);background:var(--green-l);}
 .api-lbl{font-weight:700;font-size:14px;color:var(--navy);white-space:nowrap;}
 .api-hint{font-size:11.5px;color:var(--muted);margin-top:2px;}
-.api-badge{display:inline-block;background:#4285f4;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin-right:6px;}
+.api-badge{display:inline-block;background:#10b981;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin-right:6px;}
 .api-inp-w{flex:1;min-width:240px;}
 .api-inp{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'Heebo',sans-serif;font-size:13px;direction:ltr;letter-spacing:.5px;outline:none;transition:border-color .2s;}
 .api-inp:focus{border-color:var(--teal);}
 .api-inp::placeholder{letter-spacing:0;color:var(--muted);}
 .btn-key{background:var(--navy);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity .2s;}
 .btn-key:hover{opacity:.85;}
-.api-link{font-size:12px;color:#4285f4;text-decoration:none;white-space:nowrap;font-weight:600;}
+.api-link{font-size:12px;color:#10b981;text-decoration:none;white-space:nowrap;font-weight:600;}
 .api-link:hover{text-decoration:underline;}
-
-/* UPLOAD */
 .upload-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
 .ucard{background:#fff;border-radius:var(--r);border:2px dashed #c8d3e8;padding:28px 24px;text-align:center;cursor:pointer;transition:all .2s;}
 .ucard:hover{border-color:var(--teal);transform:translateY(-1px);box-shadow:0 4px 20px rgba(15,118,110,.12);}
@@ -55,27 +49,23 @@ input[type=file]{display:none;}
 .u-t{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px;}
 .u-h{font-size:12px;color:var(--muted);}
 .u-fn{margin-top:10px;font-size:13px;font-weight:600;color:var(--teal);background:var(--teal-l);padding:5px 12px;border-radius:6px;display:inline-block;}
-
-/* BUTTONS */
 .abar{display:flex;align-items:center;gap:12px;margin-bottom:36px;}
 .btn-go{background:linear-gradient(135deg,var(--teal),#0891b2);color:#fff;border:none;padding:13px 32px;border-radius:10px;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .2s;box-shadow:0 2px 8px rgba(15,118,110,.25);}
 .btn-go:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(15,118,110,.35);}
 .btn-go:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
 .btn-sec{background:#fff;color:var(--navy);border:1.5px solid var(--border);padding:12px 22px;border-radius:10px;font-family:'Heebo',sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all .2s;}
 .btn-sec:hover{border-color:var(--teal);color:var(--teal);}
-
-/* LOADING */
 .load-card{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);padding:64px 40px;text-align:center;}
 .spinner{width:44px;height:44px;border:3px solid var(--teal-l);border-top-color:var(--teal);border-radius:50%;animation:spin .75s linear infinite;margin:0 auto 20px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .ld-t{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:6px;}
 .ld-s{font-size:13px;color:var(--muted);}
-
-/* SUMMARY */
+.ld-prog{margin-top:16px;background:#eef2f7;border-radius:8px;height:6px;overflow:hidden;width:280px;margin-inline:auto;}
+.ld-bar{height:100%;background:linear-gradient(90deg,var(--teal),#06b6d4);border-radius:8px;transition:width .4s ease;width:0%;}
 .sum-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
 .scard{background:#fff;border-radius:var(--r);padding:22px 24px 18px;box-shadow:var(--shadow);border-top:4px solid var(--border);}
 .scard.s-tot{border-color:var(--navy);}
-.scard.s-ok {border-color:var(--green);}
+.scard.s-ok{border-color:var(--green);}
 .scard.s-err{border-color:var(--red);}
 .scard.s-mis{border-color:#f59e0b;}
 .sl{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;}
@@ -84,13 +74,9 @@ input[type=file]{display:none;}
 .s-err .sv{color:var(--red);}
 .s-mis .sv{color:#d97706;}
 .sd{font-size:12px;color:var(--muted);margin-top:4px;}
-
-/* META */
 .metabar{background:var(--navy);border-radius:var(--r);padding:16px 24px;margin-bottom:24px;display:flex;gap:32px;flex-wrap:wrap;}
 .mi{color:rgba(255,255,255,.5);font-size:12px;}
 .mi strong{color:#fff;font-weight:600;font-size:14px;display:block;}
-
-/* TABS */
 .tabs{display:flex;gap:4px;background:#fff;padding:5px;border-radius:10px;box-shadow:var(--shadow);width:fit-content;margin-bottom:16px;}
 .tab{padding:8px 22px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);border:none;background:none;font-family:'Heebo',sans-serif;transition:all .15s;display:flex;align-items:center;gap:6px;}
 .tab.on{background:var(--navy);color:#fff;}
@@ -98,8 +84,6 @@ input[type=file]{display:none;}
 .tab.on .tc{background:rgba(255,255,255,.2);color:#fff;}
 .pane{display:none;}
 .pane.on{display:block;}
-
-/* TABLE */
 .tw{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);overflow:auto;margin-bottom:24px;}
 table{width:100%;border-collapse:collapse;font-size:13px;min-width:900px;}
 thead th{background:var(--navy);color:rgba(255,255,255,.85);padding:12px 14px;font-weight:600;font-size:11.5px;text-align:right;white-space:nowrap;}
@@ -113,27 +97,18 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
 .tprod{font-weight:500;}
 .tnum{font-variant-numeric:tabular-nums;white-space:nowrap;}
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:700;white-space:nowrap;}
-.bok {background:var(--green-l);color:var(--green);border:1px solid var(--green-b);}
-.berr{background:var(--red-l);  color:var(--red);  border:1px solid var(--red-b);}
+.bok{background:var(--green-l);color:var(--green);border:1px solid var(--green-b);}
+.berr{background:var(--red-l);color:var(--red);border:1px solid var(--red-b);}
 .bmis{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b);}
 .ci{font-weight:600;color:var(--red);}
 .cr{font-size:11px;color:var(--muted);text-decoration:line-through;display:block;margin-top:1px;}
-.disc{font-size:11.5px;color:var(--red);line-height:1.7;max-width:240px;}
-
+.disc{font-size:11.5px;color:var(--red);line-height:1.7;max-width:260px;}
 .empty{text-align:center;padding:60px 40px;}
 .eit{font-size:18px;font-weight:700;color:var(--green);margin-bottom:6px;margin-top:14px;}
 .eis{font-size:13px;color:var(--muted);}
-
-.errbox{background:var(--red-l);border:1px solid var(--red-b);border-radius:var(--r);padding:20px 24px;color:var(--red);font-size:14px;display:flex;gap:10px;align-items:flex-start;}
-
-@media(max-width:860px){
-  .upload-row,.sum-grid{grid-template-columns:1fr 1fr;}
-  .main{padding:20px 16px 40px;}
-  .hdr{padding:0 20px;}
-}
-@media(max-width:560px){
-  .upload-row,.sum-grid{grid-template-columns:1fr;}
-}
+.errbox{background:var(--red-l);border:1px solid var(--red-b);border-radius:var(--r);padding:20px 24px;color:var(--red);font-size:13px;display:flex;gap:10px;align-items:flex-start;white-space:pre-wrap;word-break:break-word;}
+@media(max-width:860px){.upload-row,.sum-grid{grid-template-columns:1fr 1fr;}.main{padding:20px 16px 40px;}.hdr{padding:0 20px;}}
+@media(max-width:560px){.upload-row,.sum-grid{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -146,70 +121,66 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
       <div class="hdr-s">נ.א. שיווק תוצרת חקלאית בע"מ &nbsp;|&nbsp; כלי בקרה פנימי</div>
     </div>
   </div>
-  <div class="hdr-v">v1.7</div>
+  <div class="hdr-v">v2.0</div>
 </header>
 
 <main class="main">
 
-  <!-- API KEY -->
   <div class="api-strip" id="apiStrip">
     <div>
-      <div class="api-lbl"><span class="api-badge">FREE</span>מפתח Google Gemini API</div>
+      <div class="api-lbl"><span class="api-badge">FREE</span>מפתח OpenRouter API</div>
       <div class="api-hint">חינם לחלוטין · ללא כרטיס אשראי · נשמר בדפדפן</div>
     </div>
     <div class="api-inp-w">
-      <input class="api-inp" type="password" id="apiKey" placeholder="AIzaSy..." autocomplete="off" onkeydown="if(event.key==='Enter')saveKey()">
+      <input class="api-inp" type="password" id="apiKey" placeholder="sk-or-v1-..." autocomplete="off" onkeydown="if(event.key==='Enter')saveKey()">
     </div>
     <button class="btn-key" onclick="saveKey()">שמור</button>
-    <a class="api-link" href="https://aistudio.google.com/app/apikey" target="_blank">קבל מפתח חינמי ←</a>
+    <a class="api-link" href="https://openrouter.ai/keys" target="_blank">קבל מפתח חינמי ←</a>
   </div>
 
-  <!-- UPLOAD -->
   <div class="upload-row">
     <div class="ucard" id="drop1" onclick="document.getElementById('f1').click()">
       <input type="file" id="f1" accept=".pdf" onchange="onFile(1,this)">
-      <span class="u-ico">📄</span>
-      <div class="u-t">חשבונית ספק</div>
-      <div class="u-h">קובץ PDF של החשבונית מהמגדל / הספק</div>
+      <span class="u-ico">📊</span>
+      <div class="u-t">דוח תעודות משלוח</div>
+      <div class="u-h">קובץ PDF של הדוח ממחסן 24 / תחנת שיווק</div>
       <span class="u-fn" id="fn1">גרור לכאן או לחץ לבחירה</span>
     </div>
     <div class="ucard" id="drop2" onclick="document.getElementById('f2').click()">
       <input type="file" id="f2" accept=".pdf" onchange="onFile(2,this)">
-      <span class="u-ico">📊</span>
-      <div class="u-t">דוח תעודות משלוח</div>
-      <div class="u-h">קובץ PDF של הדוח ממחסן 24 / תחנת שיווק</div>
+      <span class="u-ico">📄</span>
+      <div class="u-t">חשבונית ספק</div>
+      <div class="u-h">קובץ PDF של החשבונית מהמגדל / הספק</div>
       <span class="u-fn" id="fn2">גרור לכאן או לחץ לבחירה</span>
     </div>
   </div>
 
-  <!-- ACTIONS -->
   <div class="abar">
     <button class="btn-go" id="btnGo" onclick="run()" disabled>🔍 השווה מסמכים</button>
     <button class="btn-sec" id="btnCsv" onclick="exportCsv()" style="display:none">⬇️ ייצא CSV</button>
     <button class="btn-sec" id="btnPrint" onclick="window.print()" style="display:none">🖨️ הדפס</button>
   </div>
 
-  <!-- LOADING -->
   <div id="divLoad" style="display:none">
     <div class="load-card">
       <div class="spinner"></div>
       <div class="ld-t">מנתח ומשווה את המסמכים...</div>
-      <div class="ld-s">Gemini קורא את שני הקבצים ומזהה סטיות. 20–40 שניות.</div>
+      <div class="ld-s" id="ldMsg">ממיר PDF לתמונות...</div>
+      <div class="ld-prog"><div class="ld-bar" id="ldBar"></div></div>
     </div>
   </div>
 
-  <!-- RESULTS -->
   <div id="divRes" style="display:none">
     <div class="metabar" id="metabar"></div>
     <div class="sum-grid">
       <div class="scard s-tot"><div class="sl">סה"כ שורות</div><div class="sv" id="sT">0</div><div class="sd">בחשבונית</div></div>
-      <div class="scard s-ok"> <div class="sl">תקין</div>       <div class="sv" id="sO">0</div><div class="sd">ללא סטיות</div></div>
-      <div class="scard s-err"><div class="sl">שגוי</div>        <div class="sv" id="sE">0</div><div class="sd">נדרשת בדיקה</div></div>
-      <div class="scard s-mis"><div class="sl">לא נמצא</div>    <div class="sv" id="sM">0</div><div class="sd">לא בדוח</div></div>
+      <div class="scard s-ok"><div class="sl">תקין</div><div class="sv" id="sO">0</div><div class="sd">ללא סטיות</div></div>
+      <div class="scard s-err"><div class="sl">שגוי</div><div class="sv" id="sE">0</div><div class="sd">נדרשת בדיקה</div></div>
+      <div class="scard s-mis"><div class="sl">לא נמצא</div><div class="sv" id="sM">0</div><div class="sd">לא בדוח</div></div>
     </div>
     <div class="tabs">
       <button class="tab on" id="tAll" onclick="switchTab('all')">כל השורות <span class="tc" id="cAll">0</span></button>
-      <button class="tab"    id="tErr" onclick="switchTab('err')">⚠️ שגויים בלבד <span class="tc" id="cErr">0</span></button>
+      <button class="tab" id="tErr" onclick="switchTab('err')">⚠️ שגויים בלבד <span class="tc" id="cErr">0</span></button>
     </div>
     <div id="pAll" class="pane on">
       <div class="tw"><table>
@@ -231,7 +202,7 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
           <div class="eis">כל שורות החשבונית תואמות לתעודות המשלוח</div>
         </div></div>
       </div>
-      <div class="tw" id="errTw"><table>
+      <div class="tw" id="errTw" style="display:none"><table>
         <thead><tr>
           <th>תעודה #</th><th>תאריך</th><th>מוצר</th>
           <th>משקל חשבונית</th><th>משקל תעודה</th>
@@ -244,7 +215,6 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
     </div>
   </div>
 
-  <!-- ERROR -->
   <div id="divErr" style="display:none">
     <div class="errbox">
       <span style="font-size:20px;flex-shrink:0">⚠️</span>
@@ -254,25 +224,24 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
 
 </main>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
 const FILES={1:null,2:null};
 let RES=null;
 
 function initKey(){
-  const k=localStorage.getItem('gemini_key')||'';
+  const k=localStorage.getItem('or_key')||'';
   if(k){document.getElementById('apiKey').value=k;setKeySaved();}
 }
 function saveKey(){
   const k=document.getElementById('apiKey').value.trim();
-  if(!k.startsWith('AIza')){alert('מפתח לא תקין — חייב להתחיל עם AIza');return;}
-  localStorage.setItem('gemini_key',k);
-  setKeySaved();
+  if(!k.startsWith('sk-or-')){alert('מפתח לא תקין — חייב להתחיל עם sk-or-');return;}
+  localStorage.setItem('or_key',k);setKeySaved();
 }
-function setKeySaved(){
-  document.getElementById('apiStrip').classList.add('saved');
-  ready();
-}
-function key(){return localStorage.getItem('gemini_key')||document.getElementById('apiKey').value.trim();}
+function setKeySaved(){document.getElementById('apiStrip').classList.add('saved');ready();}
+function key(){return localStorage.getItem('or_key')||document.getElementById('apiKey').value.trim();}
 
 function onFile(n,inp){
   const f=inp.files[0];if(!f)return;
@@ -281,16 +250,145 @@ function onFile(n,inp){
   document.getElementById('fn'+n).textContent='✓ '+f.name;
   ready();
 }
-function ready(){
-  document.getElementById('btnGo').disabled=!(FILES[1]&&FILES[2]&&key());
-}
-function b64(file){
-  return new Promise((ok,fail)=>{
-    const r=new FileReader();
-    r.onload=()=>ok(r.result.split(',')[1]);
-    r.onerror=fail;
-    r.readAsDataURL(file);
+function ready(){document.getElementById('btnGo').disabled=!(FILES[1]&&FILES[2]&&key());}
+
+[1,2].forEach(n=>{
+  const c=document.getElementById('drop'+n);
+  c.addEventListener('dragover',e=>{e.preventDefault();c.classList.add('drag');});
+  c.addEventListener('dragleave',()=>c.classList.remove('drag'));
+  c.addEventListener('drop',e=>{
+    e.preventDefault();c.classList.remove('drag');
+    const f=e.dataTransfer.files[0];
+    if(f&&f.type==='application/pdf'){FILES[n]=f;c.classList.add('done');document.getElementById('fn'+n).textContent='✓ '+f.name;ready();}
   });
+});
+
+function setMsg(t,pct){
+  document.getElementById('ldMsg').textContent=t;
+  if(pct!=null)document.getElementById('ldBar').style.width=pct+'%';
+}
+
+async function pdfToImages(file,scale=1.8){
+  const ab=await file.arrayBuffer();
+  const pdf=await pdfjsLib.getDocument({data:ab}).promise;
+  const imgs=[];
+  for(let i=1;i<=pdf.numPages;i++){
+    const page=await pdf.getPage(i);
+    const vp=page.getViewport({scale});
+    const canvas=document.createElement('canvas');
+    canvas.width=vp.width;canvas.height=vp.height;
+    await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;
+    imgs.push(canvas.toDataURL('image/jpeg',0.85).split(',')[1]);
+  }
+  return imgs;
+}
+
+function repairJSON(str){
+  const c=s=>s.replace(/^```(?:json)?\s*/i,'').replace(/\s*```\s*$/i,'').trim();
+  try{return JSON.parse(str);}catch(_){}
+  const s=c(str);
+  try{return JSON.parse(s);}catch(_){}
+  const st=s.indexOf('{');
+  if(st===-1)throw new Error('לא נמצא JSON בתגובה');
+  let sub=s.slice(st);
+  try{return JSON.parse(sub);}catch(_){}
+  let depth=0,inS=false,esc=false,lastClose=-1;
+  for(let i=0;i<sub.length;i++){const ch=sub[i];if(esc){esc=false;continue;}if(ch==='\\'&&inS){esc=true;continue;}if(ch==='"'){inS=!inS;continue;}if(inS)continue;if(ch==='{'||ch==='[')depth++;else if(ch==='}'||ch===']'){depth--;if(depth===0)lastClose=i+1;}}
+  if(lastClose>0){try{return JSON.parse(sub.slice(0,lastClose));}catch(_){}}
+  let fix=sub.trimEnd().replace(/,\s*$/,'');
+  let inS2=false,es2=false;
+  for(let i=0;i<fix.length;i++){const ch=fix[i];if(es2){es2=false;continue;}if(ch==='\\'&&inS2){es2=true;continue;}if(ch==='"')inS2=!inS2;}
+  if(inS2)fix+='"';
+  const stk=[];let inS3=false,es3=false;
+  for(let i=0;i<fix.length;i++){const ch=fix[i];if(es3){es3=false;continue;}if(ch==='\\'&&inS3){es3=true;continue;}if(ch==='"'){inS3=!inS3;continue;}if(inS3)continue;if(ch==='{'||ch==='[')stk.push(ch==='{'?'}':']');else if(ch==='}'||ch===']')stk.pop();}
+  fix+=stk.reverse().join('');
+  try{return JSON.parse(fix);}catch(e){throw new Error('JSON חתוך: '+e.message);}
+}
+
+const FREE_MODELS=[
+  'google/gemini-2.0-flash-exp:free',
+  'google/gemini-2.5-pro-exp-03-25:free',
+  'meta-llama/llama-4-maverick:free',
+  'meta-llama/llama-4-scout:free',
+  'google/gemma-3-27b-it:free',
+];
+
+const PROMPT=`לפניך שני מסמכים:
+מסמך א: דוח תעודות משלוח (מחסן מקבל)
+מסמך ב: חשבונית ספק (חשבונית מס)
+
+כלל התאמת מספרי תעודות — הסר את הספרה הראשונה מהמספר שבחשבונית:
+דוגמאות: "6914842"→"914842" | "7185198"→"185198" | "1627363"→"627363"
+
+עבור כל שורת פריט בחשבונית:
+1. מצא את התעודה בדוח לפי מספר (ללא הספרה הראשונה)
+2. מצא את שורת המוצר המתאימה (שמות עשויים להיות שונים — השתמש בשיפוט)
+3. השווה: משקל / מחיר ליחידה / סכום כולל
+4. הפרשי תאריכים — אל תסמן כשגוי בכלל (תאריך קליטה שונה מתאריך חשבונית — זה נורמלי)
+
+החזר JSON בלבד — ללא markdown, ללא backticks, ללא הסברים:
+{"invoice_number":"","invoice_date":"","supplier":"","buyer":"","lines":[{"delivery_note_invoice":"","delivery_note_report":"","date":"","product_invoice":"","product_report":"","weight_invoice":0,"weight_report":0,"price_invoice":0,"price_report":0,"total_invoice":0,"total_report":0,"found_in_report":true,"weight_match":true,"price_match":true,"total_match":true,"status":"תקין","discrepancies":[]}]}
+status: "תקין" / "שגוי" / "לא נמצא"
+discrepancies: מערך של מחרוזות בעברית. דוגמה: "הפרש מחיר: חשבונית 11.50 מול דוח 9.50"
+חובה לכלול כל שורה מהחשבונית. ערכים מספריים = number בלבד. אין לציין הפרשי תאריך כסטייה.`;
+
+async function callOR(k,imgs1,imgs2){
+  const imgParts=imgs=>imgs.map(b=>({type:'image_url',image_url:{url:'data:image/jpeg;base64,'+b}}));
+  const messages=[{role:'user',content:[...imgParts(imgs1),...imgParts(imgs2),{type:'text',text:PROMPT}]}];
+  const attempts=[];
+  for(const model of FREE_MODELS){
+    const shortName=model.split('/')[1].split(':')[0];
+    setMsg('שולח ל-'+shortName+'…',70);
+    try{
+      const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+k,'HTTP-Referer':'https://na-shivuk.local','X-Title':'NA Invoice Checker'},
+        body:JSON.stringify({model,messages,temperature:0,max_tokens:8000})
+      });
+      const d=await r.json();
+      if(!r.ok){
+        const msg=d.error?.message||'HTTP '+r.status;
+        attempts.push(shortName+': '+msg.slice(0,80));
+        if(r.status===429||r.status===402||r.status===503||r.status===404||r.status===400)continue;
+        throw new Error(msg);
+      }
+      const text=d.choices?.[0]?.message?.content||'';
+      if(!text){attempts.push(shortName+': תגובה ריקה');continue;}
+      return text;
+    }catch(e){
+      if(e.message&&(e.message.includes('fetch')||e.message.includes('Failed'))){attempts.push(shortName+': שגיאת רשת');continue;}
+      throw e;
+    }
+  }
+  throw new Error('כל המודלים נכשלו:\n'+attempts.join('\n'));
+}
+
+async function run(){
+  const k=key();
+  if(!k){alert('נא להזין מפתח OpenRouter API');return;}
+  document.getElementById('divLoad').style.display='block';
+  document.getElementById('divRes').style.display='none';
+  document.getElementById('divErr').style.display='none';
+  document.getElementById('btnGo').disabled=true;
+  document.getElementById('btnCsv').style.display='none';
+  document.getElementById('btnPrint').style.display='none';
+  try{
+    setMsg('ממיר דוח תעודות משלוח לתמונות…',8);
+    const imgs1=await pdfToImages(FILES[1]);
+    setMsg('ממיר חשבונית ספק לתמונות…',25);
+    const imgs2=await pdfToImages(FILES[2]);
+    setMsg('שולח לניתוח AI…',50);
+    const raw=await callOR(k,imgs1,imgs2);
+    setMsg('מעבד תוצאות…',92);
+    render(repairJSON(raw));
+  }catch(e){
+    document.getElementById('divErr').style.display='block';
+    document.getElementById('errMsg').textContent=e.message||'שגיאה לא ידועה';
+  }finally{
+    document.getElementById('divLoad').style.display='none';
+    document.getElementById('ldBar').style.width='0%';
+    ready();
+  }
 }
 
 function switchTab(t){
@@ -299,7 +397,6 @@ function switchTab(t){
     document.getElementById('p'+x).classList.toggle('on',x.toLowerCase()===t);
   });
 }
-
 function fmt(v){
   if(v===null||v===undefined||v==='')return'—';
   if(typeof v==='number')return v.toLocaleString('he-IL',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -310,7 +407,6 @@ function pair(inv,rep,match,miss){
   if(!match)return`<span class="ci">${fmt(inv)}</span><span class="cr">${fmt(rep)}</span>`;
   return`<span>${fmt(inv)}</span>`;
 }
-
 function row(l,errOnly){
   const miss=!l.found_in_report;
   const err=l.status!=='תקין';
@@ -330,7 +426,6 @@ function row(l,errOnly){
     ${errOnly?`<td class="disc">${disc}</td>`:`<td>${badge}</td><td class="disc">${disc}</td>`}`;
   return`<tr class="${err?'re':''}">${cells}</tr>`;
 }
-
 function render(data){
   RES=data;
   const L=data.lines||[];
@@ -358,204 +453,17 @@ function render(data){
   document.getElementById('btnPrint').style.display='flex';
   document.getElementById('divRes').scrollIntoView({behavior:'smooth',block:'start'});
 }
-
 function exportCsv(){
   if(!RES)return;
   const L=RES.lines||[];
   const H=['תעודה','תאריך','מוצר','משקל חשבונית','משקל תעודה','מחיר חשבונית','מחיר תעודה','סה"כ חשבונית','סה"כ תעודה','סטטוס','פירוט'];
-  const rows=L.map(l=>[
-    l.delivery_note_invoice||l.delivery_note_report,l.date||'',l.product_invoice||'',
-    l.weight_invoice??'',l.weight_report??'',l.price_invoice??'',l.price_report??'',
-    l.total_invoice??'',l.total_report??'',l.status,(l.discrepancies||[]).join(' | ')
-  ]);
+  const rows=L.map(l=>[l.delivery_note_invoice||l.delivery_note_report,l.date||'',l.product_invoice||'',l.weight_invoice??'',l.weight_report??'',l.price_invoice??'',l.price_report??'',l.total_invoice??'',l.total_report??'',l.status,(l.discrepancies||[]).join(' | ')]);
   const csv='\uFEFF'+[H,...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
   a.download=`בקרה_${RES.invoice_number||'export'}.csv`;
   a.click();
 }
-
-function repairJSON(str){
-  /* 1) direct parse */
-  try{return JSON.parse(str);}catch(_){}
-  /* 2) strip markdown fences & retry */
-  const s=str.replace(/^```(?:json)?\s*/i,'').replace(/\s*```\s*$/i,'').trim();
-  try{return JSON.parse(s);}catch(_){}
-  /* 3) find outermost { ... } and try */
-  const start=s.indexOf('{');
-  if(start===-1)throw new Error('לא נמצא JSON בתגובה מ-Gemini');
-  let sub=s.slice(start);
-  try{return JSON.parse(sub);}catch(_){}
-  /* 4) JSON truncated — walk & close open brackets */
-  let depth=0,inStr=false,esc=false,lastClose=-1;
-  const stack=[];
-  for(let i=0;i<sub.length;i++){
-    const c=sub[i];
-    if(esc){esc=false;continue;}
-    if(c==='\\'&&inStr){esc=true;continue;}
-    if(c==='"'){inStr=!inStr;continue;}
-    if(inStr)continue;
-    if(c==='{'||c==='['){stack.push(c==='{'?'}':']');depth++;}
-    else if(c==='}'||c===']'){stack.pop();depth--;if(depth===0)lastClose=i+1;}
-  }
-  /* try last complete object */
-  if(lastClose>0){try{return JSON.parse(sub.slice(0,lastClose));}catch(_){}}
-  /* try closing the open brackets */
-  let fixed=sub.trimEnd();
-  /* remove trailing comma before close */
-  fixed=fixed.replace(/,\s*$/,'');
-  /* if we're inside an unterminated string, close it */
-  let inS=false,es=false;
-  for(let i=0;i<fixed.length;i++){
-    const c=fixed[i];
-    if(es){es=false;continue;}
-    if(c==='\\'&&inS){es=true;continue;}
-    if(c==='"')inS=!inS;
-  }
-  if(inS)fixed+='"';
-  /* close open arrays/objects */
-  const stk2=[];
-  let inS2=false,es2=false;
-  for(let i=0;i<fixed.length;i++){
-    const c=fixed[i];
-    if(es2){es2=false;continue;}
-    if(c==='\\'&&inS2){es2=true;continue;}
-    if(c==='"'){inS2=!inS2;continue;}
-    if(inS2)continue;
-    if(c==='{'||c==='[')stk2.push(c==='{'?'}':']');
-    else if(c==='}'||c===']')stk2.pop();
-  }
-  fixed+=stk2.reverse().join('');
-  try{return JSON.parse(fixed);}catch(e){
-    throw new Error('תגובה חתוכה מ-Gemini — נסה שוב ('+e.message+')');
-  }
-}
-
-async function run(){
-  const k=key();
-  if(!k){alert('נא להזין מפתח API');return;}
-  document.getElementById('divLoad').style.display='block';
-  document.getElementById('divRes').style.display='none';
-  document.getElementById('divErr').style.display='none';
-  document.getElementById('btnGo').disabled=true;
-
-  try{
-    const [b1,b2]=await Promise.all([b64(FILES[1]),b64(FILES[2])]);
-
-    const prompt=`קיבלת שני מסמכים PDF:
-מסמך 1: חשבונית ספק (חשבונית מס)
-מסמך 2: דוח תעודות משלוח (ממחסן מקבל)
-
-כלל התאמת מספרי תעודות — הסר את הספרה הראשונה בחשבונית:
-"6914842" → "914842" | "7185198" → "185198" | "1627363" → "627363"
-
-עבור כל שורת פריט בחשבונית: מצא את התעודה בדוח (לפי מספר ללא prefix), מצא את שורת המוצר המתאימה (שמות עשויים להיות שונים — השתמש בשיפוט), ואז השווה משקל / מחיר / סכום כולל.
-
-החזר JSON תקין בלבד — ללא markdown, ללא הסברים, ללא backticks:
-{
-  "invoice_number":"","invoice_date":"","supplier":"","buyer":"",
-  "lines":[{
-    "delivery_note_invoice":"מספר עם prefix",
-    "delivery_note_report":"מספר ללא prefix",
-    "date":"",
-    "product_invoice":"","product_report":"",
-    "weight_invoice":0,"weight_report":0,
-    "price_invoice":0,"price_report":0,
-    "total_invoice":0,"total_report":0,
-    "found_in_report":true,
-    "weight_match":true,"price_match":true,"total_match":true,
-    "status":"תקין",
-    "discrepancies":[]
-  }]
-}
-status = "תקין" / "שגוי" / "לא נמצא"
-discrepancies = פירוט בעברית. דוגמה: "הפרש מחיר: חשבונית 11.50 מול תעודה 9.50"
-כלול כל שורה מהחשבונית. ערכים מספריים = number בלבד.`;
-
-    /* ── שלב 0: גלה מודלים זמינים ── */
-    document.querySelector('.ld-s').textContent='בודק מודלים זמינים…';
-    let MODELS=[];
-    for(const ver of ['v1beta','v1']){
-      const lr=await fetch(`https://generativelanguage.googleapis.com/${ver}/models?key=${k}`);
-      if(!lr.ok)continue;
-      const ld=await lr.json();
-      const found=(ld.models||[])
-        .filter(m=>(m.name||'').toLowerCase().includes('flash')
-                 &&(m.supportedGenerationMethods||[]).includes('generateContent'))
-        .map(m=>({v:ver,id:m.name.replace('models/',''),tokens:Math.min(m.outputTokenLimit||8192,16384)}));
-      MODELS.push(...found);
-    }
-    /* dedupe by id, prefer v1beta */
-    {const seen=new Set();MODELS=MODELS.filter(m=>seen.has(m.id)?false:seen.add(m.id));}
-    /* prefer larger models first */
-    MODELS.sort((a,b)=>b.tokens-a.tokens);
-
-    if(!MODELS.length)throw new Error('לא נמצאו מודלים תואמים ל-API key זה. בדוק שהמפתח תקין ושה-Gemini API מופעל בפרויקט.');
-
-    document.querySelector('.ld-s').textContent=`נמצאו ${MODELS.length} מודלים — מנתח מסמכים…`;
-
-    const body=(m)=>JSON.stringify({
-      contents:[{parts:[
-        {inline_data:{mime_type:'application/pdf',data:b1}},
-        {inline_data:{mime_type:'application/pdf',data:b2}},
-        {text:prompt}
-      ]}],
-      generationConfig:{temperature:0,maxOutputTokens:m.tokens}
-    });
-
-    let raw='';
-    const attempts=[];
-    for(const m of MODELS){
-      document.querySelector('.ld-s').textContent=`מנסה ${m.id}…`;
-      try{
-        const resp=await fetch(
-          `https://generativelanguage.googleapis.com/${m.v}/models/${m.id}:generateContent?key=${k}`,
-          {method:'POST',headers:{'Content-Type':'application/json'},body:body(m)}
-        );
-        const api=await resp.json();
-        const code=api.error?.code||resp.status;
-        if(!resp.ok){
-          attempts.push(`${m.id}: HTTP ${code} — ${api.error?.message||'?'}`);
-          if(code===400||code===403||code===404||code===429){continue;}
-          throw new Error(api.error?.message||'HTTP '+resp.status);
-        }
-        raw=api.candidates?.[0]?.content?.parts?.[0]?.text||'';
-        if(raw)break;
-        attempts.push(`${m.id}: תגובה ריקה`);
-      }catch(fetchErr){
-        if(fetchErr.message.includes('Failed to fetch')){
-          attempts.push(`${m.id}: שגיאת רשת`);continue;
-        }
-        throw fetchErr;
-      }
-    }
-    if(!raw)throw new Error('כל המודלים נכשלו:\n'+attempts.join('\n'));
-    render(repairJSON(raw));
-
-  }catch(e){
-    document.getElementById('divErr').style.display='block';
-    document.getElementById('errMsg').style.whiteSpace='pre-wrap';
-    document.getElementById('errMsg').textContent=e.message||'שגיאה לא ידועה';
-  }finally{
-    document.getElementById('divLoad').style.display='none';
-    ready();
-  }
-}
-
-[1,2].forEach(n=>{
-  const c=document.getElementById('drop'+n);
-  c.addEventListener('dragover',e=>{e.preventDefault();c.classList.add('drag');});
-  c.addEventListener('dragleave',()=>c.classList.remove('drag'));
-  c.addEventListener('drop',e=>{
-    e.preventDefault();c.classList.remove('drag');
-    const f=e.dataTransfer.files[0];
-    if(f&&f.type==='application/pdf'){
-      FILES[n]=f;c.classList.add('done');
-      document.getElementById('fn'+n).textContent='✓ '+f.name;
-      ready();
-    }
-  });
-});
 
 initKey();
 </script>
