@@ -146,7 +146,7 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
       <div class="hdr-s">נ.א. שיווק תוצרת חקלאית בע"מ &nbsp;|&nbsp; כלי בקרה פנימי</div>
     </div>
   </div>
-  <div class="hdr-v">v1.1</div>
+  <div class="hdr-v">v1.2</div>
 </header>
 
 <main class="main">
@@ -472,32 +472,43 @@ status = "תקין" / "שגוי" / "לא נמצא"
 discrepancies = פירוט בעברית. דוגמה: "הפרש מחיר: חשבונית 11.50 מול תעודה 9.50"
 כלול כל שורה מהחשבונית. ערכים מספריים = number בלבד.`;
 
-    const resp=await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${k}`,
-      {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-          contents:[{
-            parts:[
-              {inline_data:{mime_type:'application/pdf',data:b1}},
-              {inline_data:{mime_type:'application/pdf',data:b2}},
-              {text:prompt}
-            ]
-          }],
-          generationConfig:{temperature:0,maxOutputTokens:16384,responseMimeType:'application/json'}
-        })
+    const MODELS=[
+      {id:'gemini-2.0-flash',   tokens:16384, mime:true},
+      {id:'gemini-1.5-flash',   tokens:8192,  mime:true},
+      {id:'gemini-1.5-flash-8b',tokens:8192,  mime:false}
+    ];
+
+    const body=(m)=>JSON.stringify({
+      contents:[{parts:[
+        {inline_data:{mime_type:'application/pdf',data:b1}},
+        {inline_data:{mime_type:'application/pdf',data:b2}},
+        {text:prompt}
+      ]}],
+      generationConfig:{
+        temperature:0,
+        maxOutputTokens:m.tokens,
+        ...(m.mime?{responseMimeType:'application/json'}:{})
       }
-    );
+    });
 
-    const api=await resp.json();
-    if(!resp.ok){
-      const msg=api.error?.message||JSON.stringify(api.error)||'HTTP '+resp.status;
-      throw new Error(msg);
+    let raw='';
+    for(const m of MODELS){
+      document.querySelector('.ld-s').textContent=`מנסה ${m.id}…`;
+      const resp=await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${m.id}:generateContent?key=${k}`,
+        {method:'POST',headers:{'Content-Type':'application/json'},body:body(m)}
+      );
+      const api=await resp.json();
+      /* quota / rate-limit → try next model */
+      if(!resp.ok){
+        const code=api.error?.code||resp.status;
+        if(code===429||code===403){continue;}
+        throw new Error(api.error?.message||'HTTP '+resp.status);
+      }
+      raw=api.candidates?.[0]?.content?.parts?.[0]?.text||'';
+      if(raw)break;
     }
-
-    const raw=api.candidates?.[0]?.content?.parts?.[0]?.text||'';
-    if(!raw)throw new Error('תגובה ריקה מ-Gemini');
+    if(!raw)throw new Error('כל המודלים עברו מגבלת quota — נסה שוב בעוד מספר שניות');
     render(repairJSON(raw));
 
   }catch(e){
