@@ -146,7 +146,7 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
       <div class="hdr-s">נ.א. שיווק תוצרת חקלאית בע"מ &nbsp;|&nbsp; כלי בקרה פנימי</div>
     </div>
   </div>
-  <div class="hdr-v">v1.3</div>
+  <div class="hdr-v">v1.4</div>
 </header>
 
 <main class="main">
@@ -473,10 +473,11 @@ discrepancies = פירוט בעברית. דוגמה: "הפרש מחיר: חשב�
 כלול כל שורה מהחשבונית. ערכים מספריים = number בלבד.`;
 
     const MODELS=[
-      {id:'gemini-2.0-flash-001',      tokens:16384, mime:true},
-      {id:'gemini-2.0-flash-lite-001', tokens:16384, mime:true},
-      {id:'gemini-1.5-flash-latest',   tokens:8192,  mime:true},
-      {id:'gemini-1.5-flash-8b-latest',tokens:8192,  mime:false}
+      {id:'gemini-2.0-flash-001',       tokens:16384},
+      {id:'gemini-2.0-flash-lite-001',  tokens:16384},
+      {id:'gemini-1.5-flash-latest',    tokens:8192},
+      {id:'gemini-1.5-flash-8b-latest', tokens:8192},
+      {id:'gemini-1.5-flash',           tokens:8192}
     ];
 
     const body=(m)=>JSON.stringify({
@@ -485,11 +486,7 @@ discrepancies = פירוט בעברית. דוגמה: "הפרש מחיר: חשב�
         {inline_data:{mime_type:'application/pdf',data:b2}},
         {text:prompt}
       ]}],
-      generationConfig:{
-        temperature:0,
-        maxOutputTokens:m.tokens,
-        ...(m.mime?{responseMimeType:'application/json'}:{})
-      }
+      generationConfig:{temperature:0,maxOutputTokens:m.tokens}
     });
 
     let raw='';
@@ -503,7 +500,7 @@ discrepancies = פירוט בעברית. דוגמה: "הפרש מחיר: חשב�
       /* quota / rate-limit → try next model */
       if(!resp.ok){
         const code=api.error?.code||resp.status;
-        if(code===429||code===403||code===404){continue;}
+        if(code===400||code===403||code===404||code===429){continue;}
         throw new Error(api.error?.message||'HTTP '+resp.status);
       }
       raw=api.candidates?.[0]?.content?.parts?.[0]?.text||'';
