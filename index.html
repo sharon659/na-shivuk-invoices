@@ -360,7 +360,7 @@ status = תקין/שגוי/לא נמצא. discrepancies = מערך עברית. �
         'X-Title':'NA Shivuk Invoice Checker'
       },
       body:JSON.stringify({
-        model:'deepseek/deepseek-chat:free',
+        model:'mistralai/mistral-7b-instruct:free',
         messages:[
           {role:'system',content:'אתה מנהל חשבונות מקצועי. מחזיר JSON תקין בלבד, ללא markdown.'},
           {role:'user',content:prompt}
