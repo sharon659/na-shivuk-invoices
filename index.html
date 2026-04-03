@@ -146,7 +146,7 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
       <div class="hdr-s">נ.א. שיווק תוצרת חקלאית בע"מ &nbsp;|&nbsp; כלי בקרה פנימי</div>
     </div>
   </div>
-  <div class="hdr-v">v1.6</div>
+  <div class="hdr-v">v1.7</div>
 </header>
 
 <main class="main">
@@ -472,14 +472,27 @@ status = "תקין" / "שגוי" / "לא נמצא"
 discrepancies = פירוט בעברית. דוגמה: "הפרש מחיר: חשבונית 11.50 מול תעודה 9.50"
 כלול כל שורה מהחשבונית. ערכים מספריים = number בלבד.`;
 
-    const MODELS=[
-      {v:'v1beta', id:'gemini-2.0-flash-001',       tokens:16384},
-      {v:'v1beta', id:'gemini-2.0-flash-lite-001',  tokens:16384},
-      {v:'v1',     id:'gemini-1.5-flash-latest',    tokens:8192},
-      {v:'v1',     id:'gemini-1.5-flash',           tokens:8192},
-      {v:'v1',     id:'gemini-1.5-flash-8b-latest', tokens:8192},
-      {v:'v1',     id:'gemini-1.5-flash-8b',        tokens:8192},
-    ];
+    /* ── שלב 0: גלה מודלים זמינים ── */
+    document.querySelector('.ld-s').textContent='בודק מודלים זמינים…';
+    let MODELS=[];
+    for(const ver of ['v1beta','v1']){
+      const lr=await fetch(`https://generativelanguage.googleapis.com/${ver}/models?key=${k}`);
+      if(!lr.ok)continue;
+      const ld=await lr.json();
+      const found=(ld.models||[])
+        .filter(m=>(m.name||'').toLowerCase().includes('flash')
+                 &&(m.supportedGenerationMethods||[]).includes('generateContent'))
+        .map(m=>({v:ver,id:m.name.replace('models/',''),tokens:Math.min(m.outputTokenLimit||8192,16384)}));
+      MODELS.push(...found);
+    }
+    /* dedupe by id, prefer v1beta */
+    {const seen=new Set();MODELS=MODELS.filter(m=>seen.has(m.id)?false:seen.add(m.id));}
+    /* prefer larger models first */
+    MODELS.sort((a,b)=>b.tokens-a.tokens);
+
+    if(!MODELS.length)throw new Error('לא נמצאו מודלים תואמים ל-API key זה. בדוק שהמפתח תקין ושה-Gemini API מופעל בפרויקט.');
+
+    document.querySelector('.ld-s').textContent=`נמצאו ${MODELS.length} מודלים — מנתח מסמכים…`;
 
     const body=(m)=>JSON.stringify({
       contents:[{parts:[
