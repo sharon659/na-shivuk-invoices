@@ -146,7 +146,7 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
       <div class="hdr-s">נ.א. שיווק תוצרת חקלאית בע"מ &nbsp;|&nbsp; כלי בקרה פנימי</div>
     </div>
   </div>
-  <div class="hdr-v">v1.5</div>
+  <div class="hdr-v">v1.6</div>
 </header>
 
 <main class="main">
@@ -473,11 +473,12 @@ discrepancies = פירוט בעברית. דוגמה: "הפרש מחיר: חשב�
 כלול כל שורה מהחשבונית. ערכים מספריים = number בלבד.`;
 
     const MODELS=[
-      {id:'gemini-2.0-flash-001',       tokens:16384},
-      {id:'gemini-2.0-flash-lite-001',  tokens:16384},
-      {id:'gemini-1.5-flash-latest',    tokens:8192},
-      {id:'gemini-1.5-flash-8b-latest', tokens:8192},
-      {id:'gemini-1.5-flash',           tokens:8192}
+      {v:'v1beta', id:'gemini-2.0-flash-001',       tokens:16384},
+      {v:'v1beta', id:'gemini-2.0-flash-lite-001',  tokens:16384},
+      {v:'v1',     id:'gemini-1.5-flash-latest',    tokens:8192},
+      {v:'v1',     id:'gemini-1.5-flash',           tokens:8192},
+      {v:'v1',     id:'gemini-1.5-flash-8b-latest', tokens:8192},
+      {v:'v1',     id:'gemini-1.5-flash-8b',        tokens:8192},
     ];
 
     const body=(m)=>JSON.stringify({
@@ -495,7 +496,7 @@ discrepancies = פירוט בעברית. דוגמה: "הפרש מחיר: חשב�
       document.querySelector('.ld-s').textContent=`מנסה ${m.id}…`;
       try{
         const resp=await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/${m.id}:generateContent?key=${k}`,
+          `https://generativelanguage.googleapis.com/${m.v}/models/${m.id}:generateContent?key=${k}`,
           {method:'POST',headers:{'Content-Type':'application/json'},body:body(m)}
         );
         const api=await resp.json();
