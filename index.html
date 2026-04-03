@@ -33,13 +33,14 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
 .api-strip.saved{border-color:var(--green-b);background:var(--green-l);}
 .api-lbl{font-weight:700;font-size:14px;color:var(--navy);white-space:nowrap;}
 .api-hint{font-size:11.5px;color:var(--muted);margin-top:2px;}
+.api-badge{display:inline-block;background:#4285f4;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin-right:6px;}
 .api-inp-w{flex:1;min-width:240px;}
 .api-inp{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'Heebo',sans-serif;font-size:13px;direction:ltr;letter-spacing:.5px;outline:none;transition:border-color .2s;}
 .api-inp:focus{border-color:var(--teal);}
 .api-inp::placeholder{letter-spacing:0;color:var(--muted);}
 .btn-key{background:var(--navy);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:opacity .2s;}
 .btn-key:hover{opacity:.85;}
-.api-link{font-size:12px;color:var(--teal);text-decoration:none;white-space:nowrap;}
+.api-link{font-size:12px;color:#4285f4;text-decoration:none;white-space:nowrap;font-weight:600;}
 .api-link:hover{text-decoration:underline;}
 
 .upload-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
@@ -137,21 +138,21 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
       <div class="hdr-s">נ.א. שיווק תוצרת חקלאית בע"מ &nbsp;|&nbsp; כלי בקרה פנימי</div>
     </div>
   </div>
-  <div class="hdr-v">v1.0</div>
+  <div class="hdr-v">v2.0 · Gemini Free</div>
 </header>
 
 <main class="main">
 
   <div class="api-strip" id="apiStrip">
     <div>
-      <div class="api-lbl">🔑 מפתח Anthropic API</div>
-      <div class="api-hint">נשמר בדפדפן — מזינים פעם אחת בלבד</div>
+      <div class="api-lbl"><span class="api-badge">FREE</span>מפתח Google Gemini API</div>
+      <div class="api-hint">חינם לחלוטין · ללא כרטיס אשראי · נשמר בדפדפן</div>
     </div>
     <div class="api-inp-w">
-      <input class="api-inp" type="password" id="apiKey" placeholder="sk-ant-api03-..." autocomplete="off" onkeydown="if(event.key==='Enter')saveKey()">
+      <input class="api-inp" type="password" id="apiKey" placeholder="AIzaSy..." autocomplete="off" onkeydown="if(event.key==='Enter')saveKey()">
     </div>
     <button class="btn-key" onclick="saveKey()">שמור</button>
-    <a class="api-link" href="https://console.anthropic.com/settings/keys" target="_blank">קבל מפתח ←</a>
+    <a class="api-link" href="https://aistudio.google.com/app/apikey" target="_blank">קבל מפתח חינמי ←</a>
   </div>
 
   <div class="upload-row">
@@ -181,7 +182,7 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
     <div class="load-card">
       <div class="spinner"></div>
       <div class="ld-t">מנתח ומשווה את המסמכים...</div>
-      <div class="ld-s">Claude קורא את שני הקבצים ומזהה סטיות. 20–40 שניות.</div>
+      <div class="ld-s">Gemini קורא את שני הקבצים ומזהה סטיות. 20–40 שניות.</div>
     </div>
   </div>
 
@@ -193,12 +194,10 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
       <div class="scard s-err"><div class="sl">שגוי</div>        <div class="sv" id="sE">0</div><div class="sd">נדרשת בדיקה</div></div>
       <div class="scard s-mis"><div class="sl">לא נמצא</div>    <div class="sv" id="sM">0</div><div class="sd">לא בדוח</div></div>
     </div>
-
     <div class="tabs">
       <button class="tab on" id="tAll" onclick="switchTab('all')">כל השורות <span class="tc" id="cAll">0</span></button>
       <button class="tab"    id="tErr" onclick="switchTab('err')">⚠️ שגויים בלבד <span class="tc" id="cErr">0</span></button>
     </div>
-
     <div id="pAll" class="pane on">
       <div class="tw"><table>
         <thead><tr>
@@ -211,7 +210,6 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
         <tbody id="bAll"></tbody>
       </table></div>
     </div>
-
     <div id="pErr" class="pane">
       <div id="noErr" style="display:none">
         <div class="tw"><div class="empty">
@@ -247,20 +245,20 @@ const FILES={1:null,2:null};
 let RES=null;
 
 function initKey(){
-  const k=localStorage.getItem('ant_key')||'';
+  const k=localStorage.getItem('gemini_key')||'';
   if(k){document.getElementById('apiKey').value=k;setKeySaved();}
 }
 function saveKey(){
   const k=document.getElementById('apiKey').value.trim();
-  if(!k.startsWith('sk-ant')){alert('מפתח לא תקין — חייב להתחיל עם sk-ant');return;}
-  localStorage.setItem('ant_key',k);
+  if(!k.startsWith('AIza')){alert('מפתח לא תקין — חייב להתחיל עם AIza');return;}
+  localStorage.setItem('gemini_key',k);
   setKeySaved();
 }
 function setKeySaved(){
   document.getElementById('apiStrip').classList.add('saved');
   ready();
 }
-function key(){return localStorage.getItem('ant_key')||document.getElementById('apiKey').value.trim();}
+function key(){return localStorage.getItem('gemini_key')||document.getElementById('apiKey').value.trim();}
 
 function onFile(n,inp){
   const f=inp.files[0];if(!f)return;
@@ -370,18 +368,22 @@ async function run(){
   document.getElementById('divRes').style.display='none';
   document.getElementById('divErr').style.display='none';
   document.getElementById('btnGo').disabled=true;
+
   try{
     const [b1,b2]=await Promise.all([b64(FILES[1]),b64(FILES[2])]);
-    const prompt=`קיבלת שני מסמכים:
+
+    const prompt=`קיבלת שני מסמכים PDF:
 מסמך 1: חשבונית ספק (חשבונית מס)
 מסמך 2: דוח תעודות משלוח (ממחסן מקבל)
 
 כלל התאמת מספרי תעודות — הסר את הספרה הראשונה בחשבונית:
-"6914842" → "914842" | "7185198" → "185198" | "1627363" → "627363"
+"6914842" בחשבונית = "914842" בדוח
+"7185198" בחשבונית = "185198" בדוח
+"1627363" בחשבונית = "627363" בדוח
 
-עבור כל שורת פריט בחשבונית: מצא את התעודה בדוח (לפי מספר ללא prefix), מצא את שורת המוצר המתאימה (שמות עשויים להיות שונים — השתמש בשיפוט), ואז השווה משקל / מחיר / סכום כולל.
+עבור כל שורת פריט בחשבונית: מצא את התעודה בדוח, מצא את שורת המוצר המתאימה (שמות עשויים להיות שונים), ואז השווה משקל / מחיר / סכום כולל.
 
-החזר JSON תקין בלבד — אפס markdown, אפס הסברים:
+החזר JSON תקין בלבד — ללא markdown, ללא backticks, ללא הסברים:
 {
   "invoice_number":"","invoice_date":"","supplier":"","buyer":"",
   "lines":[{
@@ -399,33 +401,33 @@ async function run(){
   }]
 }
 status = "תקין" / "שגוי" / "לא נמצא"
-discrepancies = פירוט בעברית לכל הפרש. דוגמה: "הפרש מחיר: חשבונית ₪11.50 מול תעודה ₪9.50"
-כלול כל שורה מהחשבונית. ערכים מספריים = number בלבד.`;
+discrepancies = פירוט בעברית. דוגמה: "הפרש מחיר: חשבונית 11.50 מול תעודה 9.50"
+כלול כל שורה. ערכים מספריים = number בלבד.`;
 
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key':k,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:4096,
-        system:'אתה מנהל חשבונות מקצועי. מחזיר JSON תקין בלבד, ללא markdown.',
-        messages:[{role:'user',content:[
-          {type:'document',source:{type:'base64',media_type:'application/pdf',data:b1}},
-          {type:'document',source:{type:'base64',media_type:'application/pdf',data:b2}},
-          {type:'text',text:prompt}
-        ]}]
-      })
-    });
+    const resp=await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${k}`,
+      {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          contents:[{parts:[
+            {inline_data:{mime_type:'application/pdf',data:b1}},
+            {inline_data:{mime_type:'application/pdf',data:b2}},
+            {text:prompt}
+          ]}],
+          generationConfig:{temperature:0,maxOutputTokens:8192}
+        })
+      }
+    );
+
     const api=await resp.json();
     if(!resp.ok)throw new Error(api.error?.message||'HTTP '+resp.status);
-    const raw=(api.content||[]).map(b=>b.text||'').join('');
+
+    const raw=api.candidates?.[0]?.content?.parts?.[0]?.text||'';
+    if(!raw)throw new Error('תגובה ריקה מ-Gemini');
     const clean=raw.replace(/^```(?:json)?\s*/i,'').replace(/\s*```\s*$/i,'').trim();
     render(JSON.parse(clean));
+
   }catch(e){
     document.getElementById('divErr').style.display='block';
     document.getElementById('errMsg').textContent=e.message||'שגיאה לא ידועה';
