@@ -24,17 +24,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
 .hdr-s{color:rgba(255,255,255,.4);font-size:12px;margin-top:1px;}
 .hdr-v{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.45);font-size:11px;padding:4px 12px;border-radius:20px;}
 .main{max-width:1240px;margin:0 auto;padding:32px 32px 60px;}
-.api-strip{background:#fff;border-radius:var(--r);border:2px solid #fcd34d;padding:18px 24px;margin-bottom:20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;transition:border-color .3s,background .3s;}
-.api-strip.saved{border-color:var(--green-b);background:var(--green-l);}
-.api-lbl{font-weight:700;font-size:14px;color:var(--navy);white-space:nowrap;}
-.api-hint{font-size:11.5px;color:var(--muted);margin-top:2px;}
-.api-badge{display:inline-block;background:#6366f1;color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin-right:6px;}
-.api-inp-w{flex:1;min-width:240px;}
-.api-inp{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-family:'Heebo',sans-serif;font-size:13px;direction:ltr;letter-spacing:.3px;outline:none;transition:border-color .2s;}
-.api-inp:focus{border-color:var(--teal);}
-.api-inp::placeholder{letter-spacing:0;color:var(--muted);}
-.btn-key{background:var(--navy);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
-.api-link{font-size:12px;color:#6366f1;text-decoration:none;white-space:nowrap;font-weight:600;}
+.info-strip{background:#fff;border-radius:var(--r);border:2px solid var(--teal-l);padding:14px 20px;margin-bottom:20px;font-size:13px;color:var(--navy);display:flex;align-items:center;gap:10px;}
 .upload-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
 .ucard{background:#fff;border-radius:var(--r);border:2px dashed #c8d3e8;padding:28px 24px;text-align:center;cursor:pointer;transition:all .2s;}
 .ucard:hover{border-color:var(--teal);transform:translateY(-1px);}
@@ -94,11 +84,12 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
 .bmis{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b);}
 .ci{font-weight:600;color:var(--red);}
 .cr{font-size:11px;color:var(--muted);text-decoration:line-through;display:block;margin-top:1px;}
-.disc{font-size:11.5px;color:var(--red);line-height:1.7;max-width:240px;}
+.disc{font-size:11.5px;color:var(--red);line-height:1.7;max-width:260px;}
 .empty{text-align:center;padding:60px 40px;}
 .eit{font-size:18px;font-weight:700;color:var(--green);margin-bottom:6px;margin-top:14px;}
 .eis{font-size:13px;color:var(--muted);}
 .errbox{background:var(--red-l);border:1px solid var(--red-b);border-radius:var(--r);padding:20px 24px;color:var(--red);font-size:14px;display:flex;gap:10px;align-items:flex-start;}
+.dbg{background:#f8faff;border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:20px;font-size:12px;color:var(--muted);white-space:pre-wrap;max-height:200px;overflow:auto;display:none;}
 @media(max-width:860px){.upload-row,.sum-grid{grid-template-columns:1fr 1fr;}.main{padding:20px 16px 40px;}.hdr{padding:0 20px;}}
 @media(max-width:560px){.upload-row,.sum-grid{grid-template-columns:1fr;}}
 </style>
@@ -112,33 +103,25 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
       <div class="hdr-s">נ.א. שיווק תוצרת חקלאית בע"מ &nbsp;|&nbsp; כלי בקרה פנימי</div>
     </div>
   </div>
-  <div class="hdr-v">v7.0</div>
+  <div class="hdr-v">v8.0 · ללא AI</div>
 </header>
 <main class="main">
-  <div class="api-strip" id="apiStrip">
-    <div>
-      <div class="api-lbl"><span class="api-badge">FREE</span>מפתח OpenRouter API</div>
-      <div class="api-hint">חינם · openrouter.ai · נשמר בדפדפן</div>
-    </div>
-    <div class="api-inp-w">
-      <input class="api-inp" type="password" id="apiKey" placeholder="sk-or-v1-..." autocomplete="off" onkeydown="if(event.key==='Enter')saveKey()">
-    </div>
-    <button class="btn-key" onclick="saveKey()">שמור</button>
-    <a class="api-link" href="https://openrouter.ai/keys" target="_blank">קבל מפתח ←</a>
+  <div class="info-strip">
+    ✅ <strong>גרסה אלגוריתמית — ללא AI, ללא המצאות.</strong> &nbsp;הכלי קורא ומפרסר את הקבצים ישירות ומשווה מספרים מדויקים.
   </div>
   <div class="upload-row">
     <div class="ucard" id="drop1" onclick="document.getElementById('f1').click()">
       <input type="file" id="f1" accept=".pdf" onchange="onFile(1,this)">
       <span class="u-ico">📄</span>
-      <div class="u-t">חשבונית ספק</div>
-      <div class="u-h">קובץ PDF של החשבונית מהמגדל / הספק</div>
+      <div class="u-t">חשבונית ספק (AGROLINE)</div>
+      <div class="u-h">PDF של החשבונית מהמגדל</div>
       <span class="u-fn" id="fn1">גרור לכאן או לחץ לבחירה</span>
     </div>
     <div class="ucard" id="drop2" onclick="document.getElementById('f2').click()">
       <input type="file" id="f2" accept=".pdf" onchange="onFile(2,this)">
       <span class="u-ico">📊</span>
-      <div class="u-t">דוח תעודות משלוח</div>
-      <div class="u-h">קובץ PDF של הדוח ממחסן 24 / תחנת שיווק</div>
+      <div class="u-t">דוח תעודות משלוח (ניסן מחשבים)</div>
+      <div class="u-h">PDF של הדוח ממחסן 24</div>
       <span class="u-fn" id="fn2">גרור לכאן או לחץ לבחירה</span>
     </div>
   </div>
@@ -150,8 +133,8 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
   <div id="divLoad" style="display:none">
     <div class="load-card">
       <div class="spinner"></div>
-      <div class="ld-t" id="ldTxt">מחלץ טקסט...</div>
-      <div class="ld-s" id="ldSub">מנסה מספר מודלים עד שאחד עובד</div>
+      <div class="ld-t">מפרסר את הקבצים...</div>
+      <div class="ld-s">קריאה ישירה — ללא AI, מהיר ומדויק</div>
     </div>
   </div>
   <div id="divRes" style="display:none">
@@ -204,34 +187,12 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
       <div><strong>שגיאה:</strong> <span id="errMsg"></span></div>
     </div>
   </div>
+  <pre class="dbg" id="dbg"></pre>
 </main>
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 const FILES={1:null,2:null};
 let RES=null;
-
-// מודלים חינמיים לנסות בסדר
-const MODELS=[
-  'meta-llama/llama-3.3-70b-instruct:free',
-  'google/gemma-3-27b-it:free',
-  'google/gemma-3-12b-it:free',
-  'nvidia/llama-3.1-nemotron-70b-instruct:free',
-  'qwen/qwen3-8b:free',
-  'mistralai/devstral-small:free'
-];
-
-function initKey(){
-  const k=localStorage.getItem('or_key')||'';
-  if(k){document.getElementById('apiKey').value=k;setKeySaved();}
-}
-function saveKey(){
-  const k=document.getElementById('apiKey').value.trim();
-  if(!k.startsWith('sk-or')){alert('מפתח לא תקין — חייב להתחיל עם sk-or');return;}
-  localStorage.setItem('or_key',k);
-  setKeySaved();
-}
-function setKeySaved(){document.getElementById('apiStrip').classList.add('saved');ready();}
-function key(){return localStorage.getItem('or_key')||document.getElementById('apiKey').value.trim();}
 
 function onFile(n,inp){
   const f=inp.files[0];if(!f)return;
@@ -240,20 +201,199 @@ function onFile(n,inp){
   document.getElementById('fn'+n).textContent='✓ '+f.name;
   ready();
 }
-function ready(){document.getElementById('btnGo').disabled=!(FILES[1]&&FILES[2]&&key());}
+function ready(){document.getElementById('btnGo').disabled=!(FILES[1]&&FILES[2]);}
 
+// ── Extract text preserving structure ──
 async function extractText(file){
   const ab=await file.arrayBuffer();
   const pdf=await pdfjsLib.getDocument({data:ab}).promise;
-  let text='';
+  let pages=[];
   for(let i=1;i<=pdf.numPages;i++){
     const page=await pdf.getPage(i);
     const content=await page.getTextContent();
-    text+=content.items.map(s=>s.str).join(' ')+'\n';
+    // Group items by Y position to reconstruct lines
+    const byY={};
+    for(const item of content.items){
+      const y=Math.round(item.transform[5]);
+      if(!byY[y]) byY[y]=[];
+      byY[y].push({x:item.transform[4], str:item.str});
+    }
+    const sortedYs=Object.keys(byY).map(Number).sort((a,b)=>b-a);
+    const lines=sortedYs.map(y=>byY[y].sort((a,b)=>a.x-b.x).map(i=>i.str).join(' '));
+    pages.push(lines.join('\n'));
   }
-  return text;
+  return pages.join('\n');
 }
 
+// ── Parse AGROLINE invoice ──
+function parseInvoice(text){
+  const lines=text.split('\n');
+  const items=[];
+  let invoiceNo='', invoiceDate='', supplier='', buyer='';
+
+  // Extract invoice number
+  const noMatch=text.match(/No\s*[-–]?\s*(\d+)/);
+  if(noMatch) invoiceNo=noMatch[1].trim();
+
+  // Extract date
+  const dateMatch=text.match(/(\d{1,2}\/\d{2}\/\d{4})/);
+  if(dateMatch) invoiceDate=dateMatch[1];
+
+  // Extract supplier/buyer
+  const suppMatch=text.match(/ד\s*\.\s*חי|חי\s+שיווק|בראשית|AGROLINE/i);
+  if(suppMatch) supplier=suppMatch[0].trim();
+  const buyMatch=text.match(/נ\.?א\.?\s*שיווק|נ\.א\s+שיווק/i);
+  if(buyMatch) buyer='נ.א. שיווק תוצרת חקלאית בע"מ';
+
+  // Parse data rows: date, note, assmachta, product, size, pkg, qty, weight, price, total
+  // Pattern: date | note_num | assmachta | product description | size | pkg_type | qty | weight | price | total
+  // AGROLINE format rows look like: 28/03/2026 2556 8433 פלפל רמירו אדום מגש קרטון 66 480.00 18.00 8,640.00
+  const rowRe=/(\d{2}\/\d{2}\/\d{4})\s+(\d+)\s+(\d+)\s+(.+?)\s+(מגש|שק|סל|ארגז|כלוב|לוז|קרטון)\s+קרטון\s+(\d+)\s+([\d,]+\.?\d*)\s+([\d,]+\.?\d*)\s+([\d,]+\.?\d*)/g;
+  let m;
+  while((m=rowRe.exec(text))!==null){
+    const weight=parseFloat(m[7].replace(/,/g,''));
+    const price=parseFloat(m[8].replace(/,/g,''));
+    const total=parseFloat(m[9].replace(/,/g,''));
+    if(weight>0&&price>0&&total>0){
+      items.push({
+        date:m[1], note:m[2].trim(), assmachta:m[3].trim(),
+        product:m[4].trim(), weight, price, total
+      });
+    }
+  }
+
+  // Fallback: simpler pattern if above doesn't work
+  if(items.length===0){
+    const rowRe2=/(\d{2}\/\d{2}\/\d{4})\s+(\d+)\s+(\d+)\s+(.+?)\s+(\d+)\s+([\d,]+\.\d{2})\s+([\d,]+\.\d{2})\s+([\d,]+\.\d{2})/g;
+    while((m=rowRe2.exec(text))!==null){
+      const weight=parseFloat(m[6].replace(/,/g,''));
+      const price=parseFloat(m[7].replace(/,/g,''));
+      const total=parseFloat(m[8].replace(/,/g,''));
+      if(weight>0&&price>0&&total>0){
+        items.push({
+          date:m[1], note:m[2].trim(), assmachta:m[3].trim(),
+          product:m[4].trim(), weight, price, total
+        });
+      }
+    }
+  }
+
+  return {invoiceNo, invoiceDate, supplier, buyer, items};
+}
+
+// ── Parse ניסן מחשבים report ──
+function parseReport(text){
+  const items=[];
+  // Pattern: date | note | farm | product | size | pkg | qty | weight | pacht | neto | price | total | ...
+  // Example: 28/03 2556 9 ד.חי שיווק תוצר שושקה // קר 66 480.0 480.0 480.0 18.00 8640.00 8640.00 24 פ
+  const rowRe=/(\d{1,2}\/\d{2})\s+(\d+)\s+\d+\s+.{2,30}?\s+([\u0590-\u05ff\s"'.\/]+?)\s+(?:\/\S*\s+)?קר\s+(\d+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d,.]+)\s+([\d,.]+)/g;
+  let m;
+  while((m=rowRe.exec(text))!==null){
+    const weight=parseFloat(m[7]);
+    const price=parseFloat(m[8]);
+    const total=parseFloat(m[9].replace(/,/g,''));
+    if(weight>0&&price>0&&total>0){
+      items.push({
+        date:m[1], note:m[2].trim(),
+        product:m[3].trim(), weight, price, total
+      });
+    }
+  }
+
+  // Fallback simpler
+  if(items.length===0){
+    const lines=text.split('\n');
+    for(const line of lines){
+      const nums=line.match(/([\d.]+)/g);
+      if(!nums||nums.length<4) continue;
+      const noteM=line.match(/^\s*(\d{1,2}\/\d{2})\s+(\d+)/);
+      if(!noteM) continue;
+      // find Hebrew product name
+      const hebM=line.match(/([\u0590-\u05ff][^\d\n]+?)(?:\s+\/|\s+קר|\s+\d)/);
+      if(!hebM) continue;
+      const floats=nums.map(parseFloat).filter(n=>n>0&&n<1000000);
+      if(floats.length<3) continue;
+      const weight=floats[floats.length-4]||0;
+      const price=floats[floats.length-3]||0;
+      const total=floats[floats.length-2]||0;
+      if(weight>0&&price>0&&total>0){
+        items.push({date:noteM[1],note:noteM[2],product:hebM[1].trim(),weight,price,total});
+      }
+    }
+  }
+
+  return items;
+}
+
+// ── Match invoice item to report ──
+function findInReport(invItem, reportItems){
+  // Match by delivery note number (exact)
+  const byNote=reportItems.filter(r=>r.note===invItem.note);
+  if(byNote.length===1) return byNote[0];
+  if(byNote.length>1){
+    // Try to match by weight too
+    const byW=byNote.filter(r=>Math.abs(r.weight-invItem.weight)<1);
+    if(byW.length>0) return byW[0];
+    return byNote[0];
+  }
+  return null;
+}
+
+// ── Compare ──
+function compare(inv, report){
+  const lines=[];
+  for(const item of inv.items){
+    const match=findInReport(item, report);
+    if(!match){
+      lines.push({
+        delivery_note_invoice:item.note,
+        delivery_note_report:'—',
+        date:item.date,
+        product_invoice:item.product,
+        product_report:'—',
+        weight_invoice:item.weight, weight_report:null,
+        price_invoice:item.price, price_report:null,
+        total_invoice:item.total, total_report:null,
+        found_in_report:false,
+        weight_match:false, price_match:false, total_match:false,
+        status:'לא נמצא',
+        discrepancies:['תעודה לא נמצאה בדוח המשלוח']
+      });
+      continue;
+    }
+    const THRESH=0.01;
+    const wMatch=Math.abs(match.weight-item.weight)<THRESH;
+    const pMatch=Math.abs(match.price-item.price)<THRESH;
+    const tMatch=Math.abs(match.total-item.total)<THRESH;
+    const discs=[];
+    if(!wMatch) discs.push(`הפרש משקל: חשבונית ${item.weight} ק"ג מול תעודה ${match.weight} ק"ג (הפרש ${(item.weight-match.weight).toFixed(1)} ק"ג)`);
+    if(!pMatch) discs.push(`הפרש מחיר: חשבונית ₪${item.price} מול תעודה ₪${match.price} לק"ג`);
+    if(!tMatch) discs.push(`הפרש סכום: חשבונית ₪${item.total.toLocaleString()} מול תעודה ₪${match.total.toLocaleString()}`);
+    lines.push({
+      delivery_note_invoice:item.note,
+      delivery_note_report:match.note,
+      date:item.date,
+      product_invoice:item.product,
+      product_report:match.product,
+      weight_invoice:item.weight, weight_report:match.weight,
+      price_invoice:item.price, price_report:match.price,
+      total_invoice:item.total, total_report:match.total,
+      found_in_report:true,
+      weight_match:wMatch, price_match:pMatch, total_match:tMatch,
+      status:discs.length?'שגוי':'תקין',
+      discrepancies:discs
+    });
+  }
+  return {
+    invoice_number:inv.invoiceNo,
+    invoice_date:inv.invoiceDate,
+    supplier:inv.supplier,
+    buyer:inv.buyer,
+    lines
+  };
+}
+
+// ── UI ──
 function switchTab(t){
   ['All','Err'].forEach(x=>{
     document.getElementById('t'+x).classList.toggle('on',x.toLowerCase()===t);
@@ -261,20 +401,20 @@ function switchTab(t){
   });
 }
 function fmt(v){
-  if(v===null||v===undefined||v==='')return'—';
-  if(typeof v==='number')return v.toLocaleString('he-IL',{minimumFractionDigits:2,maximumFractionDigits:2});
+  if(v===null||v===undefined) return'—';
+  if(typeof v==='number') return v.toLocaleString('he-IL',{minimumFractionDigits:2,maximumFractionDigits:2});
   return v;
 }
 function pair(inv,rep,match,miss){
-  if(miss)return'<span style="color:var(--muted)">—</span>';
-  if(!match)return`<span class="ci">${fmt(inv)}</span><span class="cr">${fmt(rep)}</span>`;
+  if(miss) return'<span style="color:var(--muted)">—</span>';
+  if(!match) return`<span class="ci">${fmt(inv)}</span><span class="cr">${fmt(rep)}</span>`;
   return`<span>${fmt(inv)}</span>`;
 }
 function row(l,errOnly){
   const miss=!l.found_in_report;
   const err=l.status!=='תקין';
-  const disc=(l.discrepancies||[]).length?l.discrepancies.map(d=>'• '+d).join('<br>'):'—';
-  const note=l.delivery_note_invoice||l.delivery_note_report||'—';
+  const disc=l.discrepancies.length?l.discrepancies.map(d=>'• '+d).join('<br>'):'—';
+  const note=l.delivery_note_invoice||'—';
   const badge=miss?'<span class="badge bmis">? לא נמצא</span>':err?'<span class="badge berr">✗ שגוי</span>':'<span class="badge bok">✓ תקין</span>';
   const cells=`
     <td class="tnote">${note}</td><td>${l.date||'—'}</td><td class="tprod">${l.product_invoice||'—'}</td>
@@ -319,9 +459,9 @@ function exportCsv(){
   const L=RES.lines||[];
   const H=['תעודה','תאריך','מוצר','משקל חשבונית','משקל תעודה','מחיר חשבונית','מחיר תעודה','סה"כ חשבונית','סה"כ תעודה','סטטוס','פירוט'];
   const rows=L.map(l=>[
-    l.delivery_note_invoice||l.delivery_note_report,l.date||'',l.product_invoice||'',
+    l.delivery_note_invoice,l.date||'',l.product_invoice||'',
     l.weight_invoice??'',l.weight_report??'',l.price_invoice??'',l.price_report??'',
-    l.total_invoice??'',l.total_report??'',l.status,(l.discrepancies||[]).join(' | ')
+    l.total_invoice??'',l.total_report??'',l.status,l.discrepancies.join(' | ')
   ]);
   const csv='\uFEFF'+[H,...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
   const a=document.createElement('a');
@@ -330,94 +470,35 @@ function exportCsv(){
   a.click();
 }
 
-async function callModel(model, prompt, k){
-  const resp=await fetch('https://openrouter.ai/api/v1/chat/completions',{
-    method:'POST',
-    headers:{
-      'Content-Type':'application/json',
-      'Authorization':'Bearer '+k,
-      'HTTP-Referer':'https://sharon659.github.io/na-shivuk-invoices',
-      'X-Title':'NA Shivuk Invoice Checker'
-    },
-    body:JSON.stringify({
-      model,
-      messages:[
-        {role:'system',content:'You are an expert accountant. Return only valid JSON, no markdown, no explanations.'},
-        {role:'user',content:prompt}
-      ],
-      temperature:0,
-      max_tokens:6000
-    })
-  });
-  const api=await resp.json();
-  if(!resp.ok) throw new Error(api.error?.message||'HTTP '+resp.status);
-  const raw=api.choices?.[0]?.message?.content||'';
-  if(!raw) throw new Error('empty response');
-  const clean=raw.replace(/^```(?:json)?\s*/i,'').replace(/\s*```\s*$/i,'').trim();
-  // validate it has lines
-  const parsed=JSON.parse(clean);
-  if(!parsed.lines||parsed.lines.length===0) throw new Error('no lines returned');
-  return parsed;
-}
-
 async function run(){
-  const k=key();
-  if(!k){alert('נא להזין מפתח API');return;}
   document.getElementById('divLoad').style.display='block';
   document.getElementById('divRes').style.display='none';
   document.getElementById('divErr').style.display='none';
   document.getElementById('btnGo').disabled=true;
-
   try{
-    document.getElementById('ldTxt').textContent='מחלץ טקסט מהקבצים...';
-    document.getElementById('ldSub').textContent='PDF.js קורא את המסמכים';
     const [t1,t2]=await Promise.all([extractText(FILES[1]),extractText(FILES[2])]);
+    const inv=parseInvoice(t1);
+    const rep=parseReport(t2);
 
-    const prompt=`להלן שני מסמכים:
+    // Debug
+    const dbg=document.getElementById('dbg');
+    dbg.textContent=`חשבונית: ${inv.items.length} שורות | דוח: ${rep.length} שורות\n`+
+      `דוגמה חשבונית: ${JSON.stringify(inv.items[0])}\n`+
+      `דוגמה דוח: ${JSON.stringify(rep[0])}`;
 
-=== חשבונית ספק ===
-${t1.slice(0,5000)}
-
-=== דוח תעודות משלוח ===
-${t2.slice(0,5000)}
-
-===
-IMPORTANT RULE - delivery note number matching:
-The invoice has a prefix digit to REMOVE before matching the report:
-Example: invoice "2556" → find "2556" in report (no prefix here, short numbers match directly)
-Example: invoice "154373" → find "154373" in report
-
-For each line item in the invoice: find matching delivery note in report, find matching product (names may differ slightly), compare weight, unit price, and total amount.
-
-Return ONLY valid JSON, no markdown:
-{"invoice_number":"","invoice_date":"","supplier":"","buyer":"","lines":[{"delivery_note_invoice":"","delivery_note_report":"","date":"","product_invoice":"","product_report":"","weight_invoice":0,"weight_report":0,"price_invoice":0,"price_report":0,"total_invoice":0,"total_report":0,"found_in_report":true,"weight_match":true,"price_match":true,"total_match":true,"status":"תקין","discrepancies":[]}]}
-
-Rules:
-- status = "תקין" (ok) / "שגוי" (error) / "לא נמצא" (not found)
-- discrepancies = Hebrew strings describing each difference
-- Include ALL invoice lines
-- All numeric values must be numbers not strings`;
-
-    let lastErr='';
-    for(let i=0;i<MODELS.length;i++){
-      const model=MODELS[i];
-      const shortName=model.split('/')[1]||model;
-      document.getElementById('ldTxt').textContent=`מנסה מודל ${i+1}/${MODELS.length}...`;
-      document.getElementById('ldSub').textContent=shortName;
-      try{
-        const data=await callModel(model,prompt,k);
-        render(data);
-        return;
-      }catch(e){
-        lastErr=e.message;
-        console.warn(`Model ${model} failed:`,e.message);
-      }
+    if(inv.items.length===0){
+      throw new Error(`לא נמצאו שורות בחשבונית. ייתכן שהפורמט שונה. לחץ F12 → Console לפרטים.`);
     }
-    throw new Error('כל המודלים נכשלו: '+lastErr);
+    if(rep.length===0){
+      throw new Error(`לא נמצאו שורות בדוח. ייתכן שהפורמט שונה.`);
+    }
 
+    const data=compare(inv,rep);
+    render(data);
   }catch(e){
     document.getElementById('divErr').style.display='block';
     document.getElementById('errMsg').textContent=e.message||'שגיאה לא ידועה';
+    document.getElementById('dbg').style.display='block';
   }finally{
     document.getElementById('divLoad').style.display='none';
     ready();
@@ -434,7 +515,6 @@ Rules:
     if(f&&f.type==='application/pdf'){FILES[n]=f;c.classList.add('done');document.getElementById('fn'+n).textContent='✓ '+f.name;ready();}
   });
 });
-initKey();
 </script>
 </body>
 </html>
