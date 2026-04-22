@@ -113,11 +113,11 @@
       <div class="hdr-s">נ.א. שיווק תוצרת חקלאית בע"מ | כלי בקרה פנימי</div>
     </div>
   </div>
-  <div class="hdr-v">v11.0</div>
+  <div class="hdr-v">v12.0</div>
 </header>
 
 <main class="main">
-  <div class="info-strip">✅ גרסה מהירה יותר — מותאמת ל־PDF עם טקסט כפול, כולל ייצוא CSV והדפסה ל־PDF</div>
+  <div class="info-strip">✅ גרסה מתוקנת: לא מוחקת מספרים כפולים, מזהה הפרשים, ומייצאת CSV/הדפסה</div>
 
   <div class="upload-row">
     <div class="ucard" id="drop1" onclick="document.getElementById('f1').click()">
@@ -261,29 +261,30 @@ function normalizeSpaces(s){
   return String(s || '').replace(/\s+/g, ' ').trim();
 }
 
-function dedupeConsecutiveTokens(line){
+function dedupeWordsOnly(line){
   const parts = normalizeSpaces(line).split(' ').filter(Boolean);
   const out = [];
   for(const p of parts){
-    if(out.length === 0 || out[out.length - 1] !== p){
-      out.push(p);
-    }
+    const isNumeric = /^\d+(?:[\/.,]\d+)*$/.test(p);
+    const prev = out[out.length - 1];
+    const prevNumeric = /^\d+(?:[\/.,]\d+)*$/.test(prev || '');
+    if(!isNumeric && !prevNumeric && prev === p) continue;
+    out.push(p);
   }
   return out.join(' ');
 }
 
-function fixSplitHebrewDots(line){
+function fixSplitTokens(line){
   return line
-    .replace(/\bד\s+\.\s+חי\b/g, 'ד.חי')
-    .replace(/\bנ\s+\.\s+א\b/g, 'נ.א')
-    .replace(/\s+\|\s+/g, '|');
+    .replace(/\bד\s*\.\s*חי\b/g, 'ד.חי')
+    .replace(/\bנ\s*\.\s*א\b/g, 'נ.א')
+    .replace(/\s+\|\s+/g, '|')
+    .replace(/\s*\/\s*/g, '/')
+    .replace(/\s*"\s*/g, '"');
 }
 
 function cleanPdfLine(line){
-  let x = normalizeSpaces(line);
-  x = dedupeConsecutiveTokens(x);
-  x = fixSplitHebrewDots(x);
-  return x;
+  return fixSplitTokens(dedupeWordsOnly(line));
 }
 
 function normalizeProduct(s){
@@ -302,18 +303,16 @@ function sameishProduct(a,b){
   const aa = normalizeProduct(a);
   const bb = normalizeProduct(b);
   if(!aa || !bb) return false;
-  if(aa === bb) return true;
-  if(aa.includes(bb) || bb.includes(aa)) return true;
+  if(aa === bb || aa.includes(bb) || bb.includes(aa)) return true;
   const wa = aa.split(' ').filter(Boolean);
   const wb = bb.split(' ').filter(Boolean);
   const common = wa.filter(w => wb.includes(w));
   return common.length >= Math.min(2, wa.length, wb.length);
 }
 
-function almostEqual(a,b,pct=0.02, minAbs=0.01){
-  a = Number(a);
-  b = Number(b);
-  return Math.abs(a - b) <= Math.max(Math.abs(b) * pct, minAbs);
+function almostEqual(a,b,pct=0.02,minAbs=0.01){
+  a = Number(a); b = Number(b);
+  return Math.abs(a-b) <= Math.max(Math.abs(b)*pct, minAbs);
 }
 
 function fmtRaw(v){
@@ -326,27 +325,18 @@ function fmt(v){
   return v;
 }
 
-function extractDecimalNumbers(s){
+function extractDecimals(s){
   return [...s.matchAll(/(\d+(?:,\d{3})*\.\d+)/g)].map(m => parseFloat(m[1].replace(/,/g,'')));
 }
 
 async function extractText(file){
   const ab = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({
-    data: ab,
-    useWorkerFetch: true,
-    isEvalSupported: false
-  }).promise;
-
+  const pdf = await pdfjsLib.getDocument({data:ab, isEvalSupported:false}).promise;
   let allText = '';
 
-  for(let i = 1; i <= pdf.numPages; i++){
+  for(let i=1; i<=pdf.numPages; i++){
     const page = await pdf.getPage(i);
-    const content = await page.getTextContent({
-      disableCombineTextItems: false,
-      normalizeWhitespace: true
-    });
-
+    const content = await page.getTextContent({normalizeWhitespace:true});
     const byY = new Map();
 
     for(const item of content.items){
@@ -357,17 +347,15 @@ async function extractText(file){
       byY.get(y).push({x:item.transform[4], str});
     }
 
-    const ys = [...byY.keys()].sort((a,b) => b-a);
-
+    const ys = [...byY.keys()].sort((a,b)=>b-a);
     for(const y of ys){
-      const row = byY.get(y)
-        .sort((a,b) => b.x - a.x)
-        .map(i => i.str)
+      const line = byY.get(y)
+        .sort((a,b)=>b.x-a.x)
+        .map(i=>i.str)
         .join(' ');
-      allText += cleanPdfLine(row) + '\n';
+      allText += cleanPdfLine(line) + '\n';
     }
   }
-
   return allText;
 }
 
@@ -389,25 +377,16 @@ function parseInvoice(text){
     const m = line.match(/^(\d{2}\/\d{2}\/\d{4})\s+(\d{2,6})\s+(\d+)\s+(.+?)\s+(\d+)\s+([\d,]+\.\d{2})\s+([\d,]+\.\d{2})\s+([\d,]+\.\d{2})$/);
     if(!m) continue;
 
-    const date = m[1];
-    const note = m[2];
-    const asmachta = m[3];
-    const product = normalizeSpaces(m[4]);
-    const qty = Number(m[5]);
-    const weight = parseFloat(m[6].replace(/,/g,''));
-    const price = parseFloat(m[7].replace(/,/g,''));
-    const total = parseFloat(m[8].replace(/,/g,''));
-
     items.push({
       source:'invoice',
-      date,
-      note,
-      asmachta,
-      product,
-      qty,
-      weight,
-      price,
-      total,
+      date:m[1],
+      note:m[2],
+      asmachta:m[3],
+      product:normalizeSpaces(m[4]),
+      qty:Number(m[5]),
+      weight:parseFloat(m[6].replace(/,/g,'')),
+      price:parseFloat(m[7].replace(/,/g,'')),
+      total:parseFloat(m[8].replace(/,/g,'')),
       matched:false
     });
   }
@@ -416,15 +395,13 @@ function parseInvoice(text){
 }
 
 function parseReport(text){
-  const rawLines = text.split('\n');
+  const lines = text.split('\n').map(cleanPdfLine);
   const items = [];
 
-  for(const raw of rawLines){
-    let line = cleanPdfLine(raw);
+  for(const line of lines){
     if(!line) continue;
-
-    if(line.includes('סה"כ לתעודה') || line.includes('סה"כ כללי') || line.includes('תא.תע') || line.includes('כל סטטוסים')) continue;
-    if(line.startsWith('---')) continue;
+    if(line.includes('סה"כ לתעודה') || line.includes('סה"כ כללי') || line.includes('כל סטטוסים')) continue;
+    if(line.includes('תא.תע') || line.startsWith('---') || line.startsWith('===')) continue;
 
     const m = line.match(/^(\d{1,2}\/\d{2})\s+(\d{2,6})\s+(\d+)\s+(.+)$/);
     if(!m) continue;
@@ -434,34 +411,37 @@ function parseReport(text){
     const grower = m[3];
     const rest = m[4];
 
-    const nums = extractDecimalNumbers(rest);
-    if(nums.length < 5) continue;
+    const decimals = extractDecimals(rest);
+    if(decimals.length < 3) continue;
 
-    const weight = nums[0];
+    let weight = 0, price = 0, total = 0;
 
-    let price = 0;
-    let total = 0;
-
-    for(let i = 1; i < nums.length - 1; i++){
-      const p = nums[i];
-      const t = nums[i + 1];
-      if(p > 0 && t > 0 && almostEqual(weight * p, t, 0.05, 1)){
-        price = p;
-        total = t;
-        break;
+    if(decimals.length >= 5){
+      weight = decimals[0];
+      for(let i=1; i<decimals.length-1; i++){
+        const p = decimals[i];
+        const t = decimals[i+1];
+        if(p > 0 && t > 0 && almostEqual(weight * p, t, 0.05, 1)){
+          price = p;
+          total = t;
+          break;
+        }
       }
     }
 
-    if(!price && nums.length >= 5){
-      price = nums[nums.length - 3];
-      total = nums[nums.length - 2];
+    if(!price || !total){
+      // שורות "רזות" אחרי ניקוי: weight, price, total
+      weight = decimals[0];
+      price = decimals[decimals.length - 2];
+      total = decimals[decimals.length - 1];
     }
 
     if(!weight || !price || !total) continue;
 
     let product = rest;
     product = product.replace(/^ד\.?חי\s+שיווק\s+תוצר\s+/, '');
-    product = product.replace(/\s+קר\s+.*$/, '');
+    product = product.replace(/\s+קר\s+\d+.*$/, '');
+    product = product.replace(/\s+\d+\s+[\d.]+\s+[\d.]+\s+[\d.]+.*$/, '');
     product = normalizeSpaces(product);
 
     items.push({
@@ -479,8 +459,8 @@ function parseReport(text){
   }
 
   const seen = new Set();
-  return items.filter(i => {
-    const k = `${i.date}|${i.note}|${i.product}|${i.weight}|${i.price}|${i.total}`;
+  return items.filter(i=>{
+    const k = `${i.date}|${i.note}|${i.weight}|${i.price}|${i.total}`;
     if(seen.has(k)) return false;
     seen.add(k);
     return true;
@@ -498,12 +478,8 @@ function scoreCandidate(invItem, repItem){
 }
 
 function findBestMatch(invItem, repItems){
-  const available = repItems.filter(r => !r.matched);
-  if(!available.length) return null;
-
-  let best = null;
-  let bestScore = -1;
-
+  const available = repItems.filter(r=>!r.matched);
+  let best = null, bestScore = -1;
   for(const rep of available){
     const score = scoreCandidate(invItem, rep);
     if(score > bestScore){
@@ -511,9 +487,7 @@ function findBestMatch(invItem, repItems){
       bestScore = score;
     }
   }
-
-  if(bestScore < 20) return null;
-  return best;
+  return bestScore >= 20 ? best : null;
 }
 
 function compare(inv, rep){
@@ -536,7 +510,6 @@ function compare(inv, rep){
         total_invoice:item.total,
         total_report:null,
         found_in_report:false,
-        alt_note_match:false,
         weight_match:false,
         price_match:false,
         total_match:false,
@@ -554,21 +527,17 @@ function compare(inv, rep){
     const noteMatch = match.note === item.note;
 
     const discrepancies = [];
+    let status = 'תקין';
 
     if(!noteMatch && weightMatch && priceMatch && totalMatch){
+      status = 'מספר תעודה שונה';
       discrepancies.push(`נמצאה התאמה לפי ערכים, אך מספר התעודה שונה: חשבונית ${item.note} מול דוח ${match.note}`);
     } else {
       if(!noteMatch) discrepancies.push(`מספר תעודה שונה: חשבונית ${item.note} מול דוח ${match.note}`);
       if(!weightMatch) discrepancies.push(`הפרש משקל: חשבונית ${fmtRaw(item.weight)} מול דוח ${fmtRaw(match.weight)}`);
       if(!priceMatch) discrepancies.push(`הפרש מחיר: חשבונית ₪${fmtRaw(item.price)} מול דוח ₪${fmtRaw(match.price)}`);
       if(!totalMatch) discrepancies.push(`הפרש סכום: חשבונית ₪${fmtRaw(item.total)} מול דוח ₪${fmtRaw(match.total)}`);
-    }
-
-    let status = 'תקין';
-    if(!noteMatch && weightMatch && priceMatch && totalMatch){
-      status = 'מספר תעודה שונה';
-    } else if(discrepancies.length){
-      status = 'שגוי';
+      if(discrepancies.length) status = 'שגוי';
     }
 
     lines.push({
@@ -584,7 +553,6 @@ function compare(inv, rep){
       total_invoice:item.total,
       total_report:match.total,
       found_in_report:true,
-      alt_note_match:!noteMatch && weightMatch && priceMatch && totalMatch,
       weight_match:weightMatch,
       price_match:priceMatch,
       total_match:totalMatch,
@@ -618,7 +586,7 @@ function pair(inv, rep, match, miss){
 function mkrow(l, errOnly){
   const miss = !l.found_in_report;
   const err = l.status !== 'תקין';
-  const disc = l.discrepancies.length ? l.discrepancies.map(d => '• ' + d).join('<br>') : '—';
+  const disc = l.discrepancies.length ? l.discrepancies.map(d=>'• '+d).join('<br>') : '—';
   const badge = badgeByStatus(l.status);
 
   const cells = `
@@ -641,20 +609,18 @@ function mkrow(l, errOnly){
 function render(data){
   RES = data;
   const L = data.lines || [];
-
-  const nO = L.filter(l => l.status === 'תקין').length;
-  const nE = L.filter(l => l.status === 'שגוי').length;
-  const nM = L.filter(l => l.status === 'לא נמצא').length;
-  const nA = L.filter(l => l.status === 'מספר תעודה שונה').length;
+  const nO = L.filter(l=>l.status==='תקין').length;
+  const nE = L.filter(l=>l.status==='שגוי').length;
+  const nM = L.filter(l=>l.status==='לא נמצא').length;
+  const nA = L.filter(l=>l.status==='מספר תעודה שונה').length;
 
   document.getElementById('sT').textContent = L.length;
   document.getElementById('sO').textContent = nO;
   document.getElementById('sE').textContent = nE;
   document.getElementById('sM').textContent = nM;
   document.getElementById('sA').textContent = nA;
-
   document.getElementById('cAll').textContent = L.length;
-  document.getElementById('cErr').textContent = nE + nM + nA;
+  document.getElementById('cErr').textContent = nE+nM+nA;
 
   document.getElementById('metabar').innerHTML =
     `<div class="mi"><strong>${data.invoice_number || '—'}</strong>מס' חשבונית</div>
@@ -662,13 +628,11 @@ function render(data){
      <div class="mi"><strong>${data.supplier || '—'}</strong>ספק</div>
      <div class="mi"><strong>${data.buyer || '—'}</strong>קונה</div>`;
 
-  document.getElementById('bAll').innerHTML = L.map(l => mkrow(l, false)).join('');
-
-  const eL = L.filter(l => l.status !== 'תקין');
+  document.getElementById('bAll').innerHTML = L.map(l=>mkrow(l,false)).join('');
+  const eL = L.filter(l=>l.status!=='תקין');
   document.getElementById('noErr').style.display = eL.length ? 'none' : 'block';
   document.getElementById('errTw').style.display = eL.length ? 'block' : 'none';
-  document.getElementById('bErr').innerHTML = eL.map(l => mkrow(l, true)).join('');
-
+  document.getElementById('bErr').innerHTML = eL.map(l=>mkrow(l,true)).join('');
   document.getElementById('divRes').style.display = 'block';
   document.getElementById('btnCsv').style.display = 'flex';
   document.getElementById('btnPrint').style.display = 'flex';
@@ -677,14 +641,8 @@ function render(data){
 
 function exportCsv(){
   if(!RES) return;
-
   const L = RES.lines || [];
-  const H = [
-    'תעודה חשבונית','תעודה בדוח','תאריך','מוצר חשבונית','מוצר בדוח',
-    'משקל חשבונית','משקל בדוח','מחיר חשבונית','מחיר בדוח',
-    'סה"כ חשבונית','סה"כ בדוח','סטטוס','פירוט'
-  ];
-
+  const H = ['תעודה חשבונית','תעודה בדוח','תאריך','מוצר חשבונית','מוצר בדוח','משקל חשבונית','משקל בדוח','מחיר חשבונית','מחיר בדוח','סה"כ חשבונית','סה"כ בדוח','סטטוס','פירוט'];
   const rows = L.map(l => [
     l.delivery_note_invoice || '',
     l.delivery_note_report || '',
@@ -700,11 +658,7 @@ function exportCsv(){
     l.status || '',
     (l.discrepancies || []).join(' | ')
   ]);
-
-  const csv = '\uFEFF' + [H, ...rows]
-    .map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(','))
-    .join('\n');
-
+  const csv = '\uFEFF' + [H, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'}));
   a.download = `בקרת_חשבונית_${RES.invoice_number || 'export'}.csv`;
@@ -712,15 +666,14 @@ function exportCsv(){
 }
 
 function switchTab(t){
-  ['All','Err'].forEach(x => {
-    document.getElementById('t'+x).classList.toggle('on', x.toLowerCase() === t);
-    document.getElementById('p'+x).classList.toggle('on', x.toLowerCase() === t);
+  ['All','Err'].forEach(x=>{
+    document.getElementById('t'+x).classList.toggle('on', x.toLowerCase()===t);
+    document.getElementById('p'+x).classList.toggle('on', x.toLowerCase()===t);
   });
 }
 
 function toggleDebug(){
   const el = document.getElementById('dbg');
-  if(!LAST_DEBUG) return;
   el.textContent = LAST_DEBUG;
   el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
@@ -735,24 +688,19 @@ async function run(){
 
   try{
     const [t1, t2] = await Promise.all([extractText(FILES[1]), extractText(FILES[2])]);
-
     const inv = parseInvoice(t1);
     const rep = parseReport(t2);
 
     LAST_DEBUG =
       `=== INVOICE (${inv.items.length} rows) ===\n` +
-      inv.items.slice(0,10).map(i => JSON.stringify(i)).join('\n') +
+      inv.items.slice(0,20).map(i=>JSON.stringify(i)).join('\n') +
       `\n\n=== REPORT (${rep.length} rows) ===\n` +
-      rep.slice(0,15).map(i => JSON.stringify(i)).join('\n') +
+      rep.slice(0,20).map(i=>JSON.stringify(i)).join('\n') +
       `\n\n=== CLEANED REPORT SAMPLE ===\n` +
-      t2.split('\n').map(cleanPdfLine).slice(0,20).join('\n');
+      t2.split('\n').map(cleanPdfLine).slice(0,25).join('\n');
 
-    if(inv.items.length === 0){
-      throw new Error(`לא נמצאו שורות בחשבונית (${inv.items.length})`);
-    }
-    if(rep.length === 0){
-      throw new Error(`לא נמצאו שורות בדוח (${rep.length})`);
-    }
+    if(inv.items.length === 0) throw new Error(`לא נמצאו שורות בחשבונית (${inv.items.length})`);
+    if(rep.length === 0) throw new Error(`לא נמצאו שורות בדוח (${rep.length})`);
 
     render(compare(inv, rep));
   } catch(e){
@@ -769,14 +717,9 @@ async function run(){
 
 [1,2].forEach(n => {
   const c = document.getElementById('drop'+n);
-  c.addEventListener('dragover', e => {
-    e.preventDefault();
-    c.classList.add('drag');
-  });
-  c.addEventListener('dragleave', () => c.classList.remove('drag'));
+  c.addEventListener('dragover', e => { e.preventDefault(); });
   c.addEventListener('drop', e => {
     e.preventDefault();
-    c.classList.remove('drag');
     const f = e.dataTransfer.files[0];
     if(f && f.type === 'application/pdf'){
       FILES[n] = f;
