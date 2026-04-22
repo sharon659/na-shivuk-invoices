@@ -1,107 +1,108 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>בקרת חשבוניות | נ.א. שיווק</title>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<style>
-:root{
-  --bg:#eef2f7;--border:#dde3ed;--text:#111827;--text2:#374151;--muted:#6b7280;
-  --teal:#0f766e;--teal-l:#e0fafa;--navy:#1e2d4a;
-  --red:#b91c1c;--red-l:#fff5f5;--red-b:#fca5a5;
-  --green:#15803d;--green-l:#f0fdf4;--green-b:#86efac;
-  --amber:#92400e;--amber-l:#fffbeb;--amber-b:#fcd34d;
-  --shadow:0 1px 3px rgba(0,0,0,.07),0 8px 28px rgba(0,0,0,.06);--r:14px;
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl;}
-.hdr{background:var(--navy);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:68px;border-bottom:3px solid var(--teal);box-shadow:0 2px 16px rgba(0,0,0,.2);}
-.hdr-l{display:flex;align-items:center;gap:14px;}
-.hdr-ico{width:40px;height:40px;background:linear-gradient(135deg,var(--teal),#06b6d4);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;}
-.hdr-t{color:#fff;font-size:17px;font-weight:700;}
-.hdr-s{color:rgba(255,255,255,.4);font-size:12px;margin-top:1px;}
-.hdr-v{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.45);font-size:11px;padding:4px 12px;border-radius:20px;}
-.main{max-width:1240px;margin:0 auto;padding:32px 32px 60px;}
-.info-strip{background:#fff;border-radius:var(--r);border:2px solid var(--teal-l);padding:14px 20px;margin-bottom:20px;font-size:13px;color:var(--navy);display:flex;align-items:center;gap:10px;}
-.upload-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
-.ucard{background:#fff;border-radius:var(--r);border:2px dashed #c8d3e8;padding:28px 24px;text-align:center;cursor:pointer;transition:all .2s;}
-.ucard:hover{border-color:var(--teal);transform:translateY(-1px);}
-.ucard.done{border-style:solid;border-color:var(--teal);background:#f0fcfb;}
-input[type=file]{display:none;}
-.u-ico{font-size:34px;margin-bottom:10px;display:block;}
-.u-t{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px;}
-.u-h{font-size:12px;color:var(--muted);}
-.u-fn{margin-top:10px;font-size:13px;font-weight:600;color:var(--teal);background:var(--teal-l);padding:5px 12px;border-radius:6px;display:inline-block;}
-.abar{display:flex;align-items:center;gap:12px;margin-bottom:36px;flex-wrap:wrap;}
-.btn-go{background:linear-gradient(135deg,var(--teal),#0891b2);color:#fff;border:none;padding:13px 32px;border-radius:10px;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .2s;box-shadow:0 2px 8px rgba(15,118,110,.25);}
-.btn-go:hover:not(:disabled){transform:translateY(-1px);}
-.btn-go:disabled{opacity:.4;cursor:not-allowed;}
-.btn-sec{background:#fff;color:var(--navy);border:1.5px solid var(--border);padding:12px 22px;border-radius:10px;font-family:'Heebo',sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;}
-.btn-sec:hover{border-color:var(--teal);color:var(--teal);}
-.load-card{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);padding:48px 40px;text-align:center;}
-.spinner{width:44px;height:44px;border:3px solid var(--teal-l);border-top-color:var(--teal);border-radius:50%;animation:spin .75s linear infinite;margin:0 auto 20px;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.ld-t{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:6px;}
-.ld-s{font-size:13px;color:var(--muted);}
-.sum-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px;}
-.scard{background:#fff;border-radius:var(--r);padding:22px 24px 18px;box-shadow:var(--shadow);border-top:4px solid var(--border);}
-.scard.s-tot{border-color:var(--navy);}
-.scard.s-ok{border-color:var(--green);}
-.scard.s-err{border-color:var(--red);}
-.scard.s-mis{border-color:#f59e0b;}
-.scard.s-alt{border-color:#7c3aed;}
-.sl{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;}
-.sv{font-size:38px;font-weight:900;line-height:1;}
-.s-ok .sv{color:var(--green);}
-.s-err .sv{color:var(--red);}
-.s-mis .sv{color:#d97706;}
-.s-alt .sv{color:#7c3aed;}
-.sd{font-size:12px;color:var(--muted);margin-top:4px;}
-.metabar{background:var(--navy);border-radius:var(--r);padding:16px 24px;margin-bottom:24px;display:flex;gap:32px;flex-wrap:wrap;}
-.mi{color:rgba(255,255,255,.5);font-size:12px;}
-.mi strong{color:#fff;font-weight:600;font-size:14px;display:block;}
-.tabs{display:flex;gap:4px;background:#fff;padding:5px;border-radius:10px;box-shadow:var(--shadow);width:fit-content;margin-bottom:16px;flex-wrap:wrap;}
-.tab{padding:8px 22px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);border:none;background:none;font-family:'Heebo',sans-serif;display:flex;align-items:center;gap:6px;}
-.tab.on{background:var(--navy);color:#fff;}
-.tc{font-size:11px;font-weight:700;padding:1px 7px;border-radius:10px;background:var(--bg);color:var(--muted);}
-.tab.on .tc{background:rgba(255,255,255,.2);color:#fff;}
-.pane{display:none;}
-.pane.on{display:block;}
-.tw{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);overflow:auto;margin-bottom:24px;}
-table{width:100%;border-collapse:collapse;font-size:13px;min-width:1150px;}
-thead th{background:var(--navy);color:rgba(255,255,255,.85);padding:12px 14px;font-weight:600;font-size:11.5px;text-align:right;white-space:nowrap;}
-tbody tr{border-bottom:1px solid #f1f5fb;}
-tbody tr:hover{background:#f8faff;}
-tbody tr.re{background:#fffcfc;}
-tbody tr:last-child{border-bottom:none;}
-td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
-.tnote{font-size:12px;font-weight:700;color:var(--navy);font-family:monospace;white-space:nowrap;}
-.tprod{font-weight:500;}
-.tnum{font-variant-numeric:tabular-nums;white-space:nowrap;}
-.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:700;white-space:nowrap;}
-.bok{background:var(--green-l);color:var(--green);border:1px solid var(--green-b);}
-.berr{background:var(--red-l);color:var(--red);border:1px solid var(--red-b);}
-.bmis{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b);}
-.balt{background:#f5f3ff;color:#6d28d9;border:1px solid #c4b5fd;}
-.ci{font-weight:600;color:var(--red);}
-.cr{font-size:11px;color:var(--muted);text-decoration:line-through;display:block;margin-top:1px;}
-.disc{font-size:11.5px;color:var(--red);line-height:1.7;max-width:320px;}
-.empty{text-align:center;padding:60px 40px;}
-.eit{font-size:18px;font-weight:700;color:var(--green);margin-bottom:6px;margin-top:14px;}
-.eis{font-size:13px;color:var(--muted);}
-.errbox{background:var(--red-l);border:1px solid var(--red-b);border-radius:var(--r);padding:20px 24px;color:var(--red);font-size:14px;display:flex;gap:10px;align-items:flex-start;}
-.dbg{background:#f8faff;border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-top:16px;font-size:11px;color:var(--muted);white-space:pre-wrap;max-height:350px;overflow:auto;font-family:monospace;direction:ltr;}
-@media(max-width:980px){.upload-row,.sum-grid{grid-template-columns:1fr 1fr;}.main{padding:20px 16px 40px;}.hdr{padding:0 20px;}}
-@media(max-width:560px){.upload-row,.sum-grid{grid-template-columns:1fr;}}
-@media print{
-  body{background:#fff;}
-  .hdr,.upload-row,.abar,.tabs,.dbg,.info-strip,#divLoad,#divErr{display:none !important;}
-  .main{max-width:none;padding:0;}
-  .tw,.scard,.metabar{box-shadow:none;border:1px solid #ccc;}
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>בקרת חשבוניות | נ.א. שיווק</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <style>
+    :root{
+      --bg:#eef2f7;--border:#dde3ed;--text:#111827;--text2:#374151;--muted:#6b7280;
+      --teal:#0f766e;--teal-l:#e0fafa;--navy:#1e2d4a;
+      --red:#b91c1c;--red-l:#fff5f5;--red-b:#fca5a5;
+      --green:#15803d;--green-l:#f0fdf4;--green-b:#86efac;
+      --amber:#92400e;--amber-l:#fffbeb;--amber-b:#fcd34d;
+      --violet:#6d28d9;--violet-l:#f5f3ff;--violet-b:#c4b5fd;
+      --shadow:0 1px 3px rgba(0,0,0,.07),0 8px 28px rgba(0,0,0,.06);--r:14px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;direction:rtl}
+    .hdr{background:var(--navy);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:68px;border-bottom:3px solid var(--teal);box-shadow:0 2px 16px rgba(0,0,0,.2)}
+    .hdr-l{display:flex;align-items:center;gap:14px}
+    .hdr-ico{width:40px;height:40px;background:linear-gradient(135deg,var(--teal),#06b6d4);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
+    .hdr-t{color:#fff;font-size:17px;font-weight:700}
+    .hdr-s{color:rgba(255,255,255,.4);font-size:12px;margin-top:1px}
+    .hdr-v{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.45);font-size:11px;padding:4px 12px;border-radius:20px}
+    .main{max-width:1280px;margin:0 auto;padding:28px 20px 60px}
+    .info-strip{background:#fff;border-radius:var(--r);border:2px solid var(--teal-l);padding:14px 20px;margin-bottom:20px;font-size:13px;color:var(--navy);display:flex;align-items:center;gap:10px}
+    .upload-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+    .ucard{background:#fff;border-radius:var(--r);border:2px dashed #c8d3e8;padding:28px 24px;text-align:center;cursor:pointer;transition:all .2s}
+    .ucard:hover{border-color:var(--teal);transform:translateY(-1px)}
+    .ucard.done{border-style:solid;border-color:var(--teal);background:#f0fcfb}
+    input[type=file]{display:none}
+    .u-ico{font-size:34px;margin-bottom:10px;display:block}
+    .u-t{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px}
+    .u-h{font-size:12px;color:var(--muted)}
+    .u-fn{margin-top:10px;font-size:13px;font-weight:600;color:var(--teal);background:var(--teal-l);padding:5px 12px;border-radius:6px;display:inline-block}
+    .abar{display:flex;align-items:center;gap:12px;margin-bottom:28px;flex-wrap:wrap}
+    .btn-go{background:linear-gradient(135deg,var(--teal),#0891b2);color:#fff;border:none;padding:13px 32px;border-radius:10px;font-family:'Heebo',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .2s;box-shadow:0 2px 8px rgba(15,118,110,.25)}
+    .btn-go:hover:not(:disabled){transform:translateY(-1px)}
+    .btn-go:disabled{opacity:.4;cursor:not-allowed}
+    .btn-sec{background:#fff;color:var(--navy);border:1.5px solid var(--border);padding:12px 22px;border-radius:10px;font-family:'Heebo',sans-serif;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px}
+    .btn-sec:hover{border-color:var(--teal);color:var(--teal)}
+    .load-card{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);padding:42px 30px;text-align:center}
+    .spinner{width:42px;height:42px;border:3px solid var(--teal-l);border-top-color:var(--teal);border-radius:50%;animation:spin .75s linear infinite;margin:0 auto 18px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .ld-t{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:6px}
+    .ld-s{font-size:13px;color:var(--muted)}
+    .sum-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px}
+    .scard{background:#fff;border-radius:var(--r);padding:22px 24px 18px;box-shadow:var(--shadow);border-top:4px solid var(--border)}
+    .scard.s-tot{border-color:var(--navy)}
+    .scard.s-ok{border-color:var(--green)}
+    .scard.s-err{border-color:var(--red)}
+    .scard.s-mis{border-color:#f59e0b}
+    .scard.s-alt{border-color:var(--violet)}
+    .sl{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+    .sv{font-size:38px;font-weight:900;line-height:1}
+    .s-ok .sv{color:var(--green)}
+    .s-err .sv{color:var(--red)}
+    .s-mis .sv{color:#d97706}
+    .s-alt .sv{color:var(--violet)}
+    .sd{font-size:12px;color:var(--muted);margin-top:4px}
+    .metabar{background:var(--navy);border-radius:var(--r);padding:16px 24px;margin-bottom:24px;display:flex;gap:32px;flex-wrap:wrap}
+    .mi{color:rgba(255,255,255,.5);font-size:12px}
+    .mi strong{color:#fff;font-weight:600;font-size:14px;display:block}
+    .tabs{display:flex;gap:4px;background:#fff;padding:5px;border-radius:10px;box-shadow:var(--shadow);width:fit-content;margin-bottom:16px;flex-wrap:wrap}
+    .tab{padding:8px 22px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);border:none;background:none;font-family:'Heebo',sans-serif;display:flex;align-items:center;gap:6px}
+    .tab.on{background:var(--navy);color:#fff}
+    .tc{font-size:11px;font-weight:700;padding:1px 7px;border-radius:10px;background:var(--bg);color:var(--muted)}
+    .tab.on .tc{background:rgba(255,255,255,.2);color:#fff}
+    .pane{display:none}
+    .pane.on{display:block}
+    .tw{background:#fff;border-radius:var(--r);box-shadow:var(--shadow);overflow:auto;margin-bottom:24px}
+    table{width:100%;border-collapse:collapse;font-size:13px;min-width:1180px}
+    thead th{background:var(--navy);color:rgba(255,255,255,.85);padding:12px 14px;font-weight:600;font-size:11.5px;text-align:right;white-space:nowrap}
+    tbody tr{border-bottom:1px solid #f1f5fb}
+    tbody tr:hover{background:#f8faff}
+    tbody tr.re{background:#fffcfc}
+    tbody tr:last-child{border-bottom:none}
+    td{padding:10px 14px;color:var(--text2);vertical-align:middle}
+    .tnote{font-size:12px;font-weight:700;color:var(--navy);font-family:monospace;white-space:nowrap}
+    .tprod{font-weight:500}
+    .tnum{font-variant-numeric:tabular-nums;white-space:nowrap}
+    .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:700;white-space:nowrap}
+    .bok{background:var(--green-l);color:var(--green);border:1px solid var(--green-b)}
+    .berr{background:var(--red-l);color:var(--red);border:1px solid var(--red-b)}
+    .bmis{background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b)}
+    .balt{background:var(--violet-l);color:var(--violet);border:1px solid var(--violet-b)}
+    .ci{font-weight:700;color:var(--red)}
+    .cr{font-size:11px;color:var(--muted);text-decoration:line-through;display:block;margin-top:1px}
+    .disc{font-size:11.5px;color:var(--red);line-height:1.7;max-width:360px}
+    .empty{text-align:center;padding:60px 40px}
+    .eit{font-size:18px;font-weight:700;color:var(--green);margin-bottom:6px;margin-top:14px}
+    .eis{font-size:13px;color:var(--muted)}
+    .errbox{background:var(--red-l);border:1px solid var(--red-b);border-radius:var(--r);padding:20px 24px;color:var(--red);font-size:14px;display:flex;gap:10px;align-items:flex-start}
+    .dbg{background:#f8faff;border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-top:16px;font-size:11px;color:var(--muted);white-space:pre-wrap;max-height:280px;overflow:auto;font-family:monospace;direction:ltr}
+    @media(max-width:980px){.upload-row,.sum-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:640px){.upload-row,.sum-grid{grid-template-columns:1fr}.hdr{padding:0 16px}.main{padding:20px 14px 40px}}
+    @media print{
+      body{background:#fff}
+      .hdr,.upload-row,.abar,.tabs,.info-strip,#divLoad,#divErr,#dbg{display:none !important}
+      .main{max-width:none;padding:0}
+      .tw,.scard,.metabar{box-shadow:none;border:1px solid #ccc}
+    }
+  </style>
 </head>
 <body>
 <header class="hdr">
@@ -112,11 +113,11 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
       <div class="hdr-s">נ.א. שיווק תוצרת חקלאית בע"מ | כלי בקרה פנימי</div>
     </div>
   </div>
-  <div class="hdr-v">v10.0</div>
+  <div class="hdr-v">v11.0</div>
 </header>
 
 <main class="main">
-  <div class="info-strip">✅ גרסה אלגוריתמית — ללא AI, עם איתור הפרשים, ייצוא CSV והדפסה ל־PDF</div>
+  <div class="info-strip">✅ גרסה מהירה יותר — מותאמת ל־PDF עם טקסט כפול, כולל ייצוא CSV והדפסה ל־PDF</div>
 
   <div class="upload-row">
     <div class="ucard" id="drop1" onclick="document.getElementById('f1').click()">
@@ -140,13 +141,14 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
     <button class="btn-go" id="btnGo" onclick="run()" disabled>🔍 השווה מסמכים</button>
     <button class="btn-sec" id="btnCsv" onclick="exportCsv()" style="display:none">⬇️ ייצא CSV</button>
     <button class="btn-sec" id="btnPrint" onclick="window.print()" style="display:none">🖨️ הדפס / שמור PDF</button>
+    <button class="btn-sec" id="btnDbg" onclick="toggleDebug()" style="display:none">🧪 הצג Debug</button>
   </div>
 
   <div id="divLoad" style="display:none">
     <div class="load-card">
       <div class="spinner"></div>
-      <div class="ld-t">מפרסר את הקבצים...</div>
-      <div class="ld-s">קריאה ישירה מה־PDF והשוואת נתונים</div>
+      <div class="ld-t">מנתח את הקבצים...</div>
+      <div class="ld-s">קריאה מהירה מה־PDF והשוואת נתונים</div>
     </div>
   </div>
 
@@ -157,8 +159,8 @@ td{padding:10px 14px;color:var(--text2);vertical-align:middle;}
       <div class="scard s-tot"><div class="sl">סה"כ שורות</div><div class="sv" id="sT">0</div><div class="sd">בחשבונית</div></div>
       <div class="scard s-ok"><div class="sl">תקין</div><div class="sv" id="sO">0</div><div class="sd">ללא סטיות</div></div>
       <div class="scard s-err"><div class="sl">שגוי</div><div class="sv" id="sE">0</div><div class="sd">פער בערכים</div></div>
-      <div class="scard s-mis"><div class="sl">לא נמצא</div><div class="sv" id="sM">0</div><div class="sd">לא בדוח</div></div>
-      <div class="scard s-alt"><div class="sl">מס' תעודה שונה</div><div class="sv" id="sA">0</div><div class="sd">נמצא לפי ערכים</div></div>
+      <div class="scard s-mis"><div class="sl">לא נמצא</div><div class="sv" id="sM">0</div><div class="sd">לא נמצא בדוח</div></div>
+      <div class="scard s-alt"><div class="sl">מס' תעודה שונה</div><div class="sv" id="sA">0</div><div class="sd">התאמה לפי ערכים</div></div>
     </div>
 
     <div class="tabs">
@@ -240,6 +242,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs
 
 const FILES = {1:null, 2:null};
 let RES = null;
+let LAST_DEBUG = '';
 
 function onFile(n, inp){
   const f = inp.files[0];
@@ -254,49 +257,42 @@ function ready(){
   document.getElementById('btnGo').disabled = !(FILES[1] && FILES[2]);
 }
 
-async function extractText(file){
-  const ab = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({data:ab}).promise;
-  let allText = '';
-
-  for(let i=1; i<=pdf.numPages; i++){
-    const page = await pdf.getPage(i);
-    const content = await page.getTextContent();
-    const byY = {};
-
-    for(const item of content.items){
-      if(!item.str || !item.str.trim()) continue;
-      const y = Math.round(item.transform[5] / 2) * 2;
-      if(!byY[y]) byY[y] = [];
-      byY[y].push({x:item.transform[4], str:item.str});
-    }
-
-    const ys = Object.keys(byY).map(Number).sort((a,b)=>b-a);
-    for(const y of ys){
-      const line = byY[y]
-        .sort((a,b)=>b.x-a.x)
-        .map(i=>i.str)
-        .join(' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-      allText += line + '\n';
-    }
-  }
-
-  return allText;
-}
-
 function normalizeSpaces(s){
   return String(s || '').replace(/\s+/g, ' ').trim();
+}
+
+function dedupeConsecutiveTokens(line){
+  const parts = normalizeSpaces(line).split(' ').filter(Boolean);
+  const out = [];
+  for(const p of parts){
+    if(out.length === 0 || out[out.length - 1] !== p){
+      out.push(p);
+    }
+  }
+  return out.join(' ');
+}
+
+function fixSplitHebrewDots(line){
+  return line
+    .replace(/\bד\s+\.\s+חי\b/g, 'ד.חי')
+    .replace(/\bנ\s+\.\s+א\b/g, 'נ.א')
+    .replace(/\s+\|\s+/g, '|');
+}
+
+function cleanPdfLine(line){
+  let x = normalizeSpaces(line);
+  x = dedupeConsecutiveTokens(x);
+  x = fixSplitHebrewDots(x);
+  return x;
 }
 
 function normalizeProduct(s){
   return normalizeSpaces(s)
     .replace(/תוצר/g, '')
     .replace(/מגש קרטון/g, '')
-    .replace(/קר/g, '')
+    .replace(/\bקר\b/g, '')
     .replace(/\/[A-Z]+/g, '')
-    .replace(/\b\d{1,2}\/?\b/g, '')
+    .replace(/\/{1,2}/g, ' ')
     .replace(/[^\u0590-\u05FFa-zA-Z0-9\s\-]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
@@ -308,19 +304,75 @@ function sameishProduct(a,b){
   if(!aa || !bb) return false;
   if(aa === bb) return true;
   if(aa.includes(bb) || bb.includes(aa)) return true;
-
   const wa = aa.split(' ').filter(Boolean);
   const wb = bb.split(' ').filter(Boolean);
   const common = wa.filter(w => wb.includes(w));
   return common.length >= Math.min(2, wa.length, wb.length);
 }
 
-function almostEqual(a,b,pct=0.02){
-  return Math.abs(Number(a)-Number(b)) <= Math.max(Math.abs(Number(b))*pct, 0.01);
+function almostEqual(a,b,pct=0.02, minAbs=0.01){
+  a = Number(a);
+  b = Number(b);
+  return Math.abs(a - b) <= Math.max(Math.abs(b) * pct, minAbs);
+}
+
+function fmtRaw(v){
+  return Number(v).toLocaleString('he-IL', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function fmt(v){
+  if(v === null || v === undefined) return '—';
+  if(typeof v === 'number') return fmtRaw(v);
+  return v;
+}
+
+function extractDecimalNumbers(s){
+  return [...s.matchAll(/(\d+(?:,\d{3})*\.\d+)/g)].map(m => parseFloat(m[1].replace(/,/g,'')));
+}
+
+async function extractText(file){
+  const ab = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({
+    data: ab,
+    useWorkerFetch: true,
+    isEvalSupported: false
+  }).promise;
+
+  let allText = '';
+
+  for(let i = 1; i <= pdf.numPages; i++){
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent({
+      disableCombineTextItems: false,
+      normalizeWhitespace: true
+    });
+
+    const byY = new Map();
+
+    for(const item of content.items){
+      const str = normalizeSpaces(item.str);
+      if(!str) continue;
+      const y = Math.round(item.transform[5]);
+      if(!byY.has(y)) byY.set(y, []);
+      byY.get(y).push({x:item.transform[4], str});
+    }
+
+    const ys = [...byY.keys()].sort((a,b) => b-a);
+
+    for(const y of ys){
+      const row = byY.get(y)
+        .sort((a,b) => b.x - a.x)
+        .map(i => i.str)
+        .join(' ');
+      allText += cleanPdfLine(row) + '\n';
+    }
+  }
+
+  return allText;
 }
 
 function parseInvoice(text){
-  const lines = text.split('\n').map(normalizeSpaces);
+  const lines = text.split('\n').map(cleanPdfLine);
   const items = [];
   let invoiceNo = '';
   let invoiceDate = '';
@@ -340,14 +392,14 @@ function parseInvoice(text){
     const date = m[1];
     const note = m[2];
     const asmachta = m[3];
-    const product = m[4].trim();
+    const product = normalizeSpaces(m[4]);
     const qty = Number(m[5]);
     const weight = parseFloat(m[6].replace(/,/g,''));
     const price = parseFloat(m[7].replace(/,/g,''));
     const total = parseFloat(m[8].replace(/,/g,''));
 
     items.push({
-      source: 'invoice',
+      source:'invoice',
       date,
       note,
       asmachta,
@@ -356,7 +408,7 @@ function parseInvoice(text){
       weight,
       price,
       total,
-      matched: false
+      matched:false
     });
   }
 
@@ -364,12 +416,15 @@ function parseInvoice(text){
 }
 
 function parseReport(text){
-  const lines = text.split('\n').map(normalizeSpaces);
+  const rawLines = text.split('\n');
   const items = [];
 
-  for(const line of lines){
+  for(const raw of rawLines){
+    let line = cleanPdfLine(raw);
     if(!line) continue;
-    if(line.includes('סה"כ לתעודה') || line.includes('סה"כ כללי') || line.includes('תא.תע|') || line.includes('כל סטטוסים')) continue;
+
+    if(line.includes('סה"כ לתעודה') || line.includes('סה"כ כללי') || line.includes('תא.תע') || line.includes('כל סטטוסים')) continue;
+    if(line.startsWith('---')) continue;
 
     const m = line.match(/^(\d{1,2}\/\d{2})\s+(\d{2,6})\s+(\d+)\s+(.+)$/);
     if(!m) continue;
@@ -379,17 +434,18 @@ function parseReport(text){
     const grower = m[3];
     const rest = m[4];
 
-    const nums = [...rest.matchAll(/(\d+(?:,\d{3})*\.\d+)/g)].map(x => parseFloat(x[1].replace(/,/g,'')));
+    const nums = extractDecimalNumbers(rest);
     if(nums.length < 5) continue;
 
     const weight = nums[0];
+
     let price = 0;
     let total = 0;
 
-    for(let i=1; i<nums.length-1; i++){
+    for(let i = 1; i < nums.length - 1; i++){
       const p = nums[i];
-      const t = nums[i+1];
-      if(p > 0 && t > 0 && almostEqual(weight * p, t, 0.05)){
+      const t = nums[i + 1];
+      if(p > 0 && t > 0 && almostEqual(weight * p, t, 0.05, 1)){
         price = p;
         total = t;
         break;
@@ -403,37 +459,41 @@ function parseReport(text){
 
     if(!weight || !price || !total) continue;
 
-    let productPart = rest;
-    productPart = productPart.replace(/^\S+\s+\S+\s+/, '');
-    productPart = productPart.replace(/\s+קר\s+.*$/, '');
-    productPart = normalizeSpaces(productPart);
+    let product = rest;
+    product = product.replace(/^ד\.?חי\s+שיווק\s+תוצר\s+/, '');
+    product = product.replace(/\s+קר\s+.*$/, '');
+    product = normalizeSpaces(product);
 
     items.push({
-      source: 'report',
+      source:'report',
       date,
       note,
       grower,
-      product: productPart,
+      product,
       weight,
       price,
       total,
-      matched: false,
-      raw: line
+      matched:false,
+      raw:line
     });
   }
 
-  return items;
+  const seen = new Set();
+  return items.filter(i => {
+    const k = `${i.date}|${i.note}|${i.product}|${i.weight}|${i.price}|${i.total}`;
+    if(seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
 }
 
 function scoreCandidate(invItem, repItem){
   let score = 0;
-
   if(invItem.note === repItem.note) score += 100;
-  if(almostEqual(invItem.weight, repItem.weight, 0.02)) score += 20;
-  if(almostEqual(invItem.price, repItem.price, 0.02)) score += 20;
-  if(almostEqual(invItem.total, repItem.total, 0.02)) score += 30;
+  if(almostEqual(invItem.weight, repItem.weight, 0.02, 0.5)) score += 20;
+  if(almostEqual(invItem.price, repItem.price, 0.02, 0.1)) score += 20;
+  if(almostEqual(invItem.total, repItem.total, 0.02, 1)) score += 30;
   if(sameishProduct(invItem.product, repItem.product)) score += 15;
-
   return score;
 }
 
@@ -464,33 +524,33 @@ function compare(inv, rep){
 
     if(!match){
       lines.push({
-        delivery_note_invoice: item.note,
-        delivery_note_report: '—',
-        date: item.date,
-        product_invoice: item.product,
-        product_report: '—',
-        weight_invoice: item.weight,
-        weight_report: null,
-        price_invoice: item.price,
-        price_report: null,
-        total_invoice: item.total,
-        total_report: null,
-        found_in_report: false,
-        alt_note_match: false,
-        weight_match: false,
-        price_match: false,
-        total_match: false,
-        status: 'לא נמצא',
-        discrepancies: ['תעודה לא נמצאה בדוח']
+        delivery_note_invoice:item.note,
+        delivery_note_report:'—',
+        date:item.date,
+        product_invoice:item.product,
+        product_report:'—',
+        weight_invoice:item.weight,
+        weight_report:null,
+        price_invoice:item.price,
+        price_report:null,
+        total_invoice:item.total,
+        total_report:null,
+        found_in_report:false,
+        alt_note_match:false,
+        weight_match:false,
+        price_match:false,
+        total_match:false,
+        status:'לא נמצא',
+        discrepancies:['תעודה לא נמצאה בדוח']
       });
       continue;
     }
 
     match.matched = true;
 
-    const weightMatch = almostEqual(match.weight, item.weight, 0.02);
-    const priceMatch = almostEqual(match.price, item.price, 0.02);
-    const totalMatch = almostEqual(match.total, item.total, 0.02);
+    const weightMatch = almostEqual(match.weight, item.weight, 0.02, 0.5);
+    const priceMatch = almostEqual(match.price, item.price, 0.02, 0.1);
+    const totalMatch = almostEqual(match.total, item.total, 0.02, 1);
     const noteMatch = match.note === item.note;
 
     const discrepancies = [];
@@ -498,18 +558,10 @@ function compare(inv, rep){
     if(!noteMatch && weightMatch && priceMatch && totalMatch){
       discrepancies.push(`נמצאה התאמה לפי ערכים, אך מספר התעודה שונה: חשבונית ${item.note} מול דוח ${match.note}`);
     } else {
-      if(!noteMatch){
-        discrepancies.push(`מספר תעודה שונה: חשבונית ${item.note} מול דוח ${match.note}`);
-      }
-      if(!weightMatch){
-        discrepancies.push(`הפרש משקל: חשבונית ${fmtRaw(item.weight)} מול דוח ${fmtRaw(match.weight)}`);
-      }
-      if(!priceMatch){
-        discrepancies.push(`הפרש מחיר: חשבונית ₪${fmtRaw(item.price)} מול דוח ₪${fmtRaw(match.price)}`);
-      }
-      if(!totalMatch){
-        discrepancies.push(`הפרש סכום: חשבונית ₪${fmtRaw(item.total)} מול דוח ₪${fmtRaw(match.total)}`);
-      }
+      if(!noteMatch) discrepancies.push(`מספר תעודה שונה: חשבונית ${item.note} מול דוח ${match.note}`);
+      if(!weightMatch) discrepancies.push(`הפרש משקל: חשבונית ${fmtRaw(item.weight)} מול דוח ${fmtRaw(match.weight)}`);
+      if(!priceMatch) discrepancies.push(`הפרש מחיר: חשבונית ₪${fmtRaw(item.price)} מול דוח ₪${fmtRaw(match.price)}`);
+      if(!totalMatch) discrepancies.push(`הפרש סכום: חשבונית ₪${fmtRaw(item.total)} מול דוח ₪${fmtRaw(match.total)}`);
     }
 
     let status = 'תקין';
@@ -520,57 +572,34 @@ function compare(inv, rep){
     }
 
     lines.push({
-      delivery_note_invoice: item.note,
-      delivery_note_report: match.note,
-      date: item.date,
-      product_invoice: item.product,
-      product_report: match.product,
-      weight_invoice: item.weight,
-      weight_report: match.weight,
-      price_invoice: item.price,
-      price_report: match.price,
-      total_invoice: item.total,
-      total_report: match.total,
-      found_in_report: true,
-      alt_note_match: !noteMatch && weightMatch && priceMatch && totalMatch,
-      weight_match: weightMatch,
-      price_match: priceMatch,
-      total_match: totalMatch,
+      delivery_note_invoice:item.note,
+      delivery_note_report:match.note,
+      date:item.date,
+      product_invoice:item.product,
+      product_report:match.product,
+      weight_invoice:item.weight,
+      weight_report:match.weight,
+      price_invoice:item.price,
+      price_report:match.price,
+      total_invoice:item.total,
+      total_report:match.total,
+      found_in_report:true,
+      alt_note_match:!noteMatch && weightMatch && priceMatch && totalMatch,
+      weight_match:weightMatch,
+      price_match:priceMatch,
+      total_match:totalMatch,
       status,
       discrepancies
     });
   }
 
   return {
-    invoice_number: inv.invoiceNo,
-    invoice_date: inv.invoiceDate,
-    supplier: inv.supplier,
-    buyer: inv.buyer,
+    invoice_number:inv.invoiceNo,
+    invoice_date:inv.invoiceDate,
+    supplier:inv.supplier,
+    buyer:inv.buyer,
     lines
   };
-}
-
-function switchTab(t){
-  ['All','Err'].forEach(x=>{
-    document.getElementById('t'+x).classList.toggle('on', x.toLowerCase()===t);
-    document.getElementById('p'+x).classList.toggle('on', x.toLowerCase()===t);
-  });
-}
-
-function fmtRaw(v){
-  return Number(v).toLocaleString('he-IL', {minimumFractionDigits:2, maximumFractionDigits:2});
-}
-
-function fmt(v){
-  if(v === null || v === undefined) return '—';
-  if(typeof v === 'number') return fmtRaw(v);
-  return v;
-}
-
-function pair(inv, rep, match, miss){
-  if(miss) return '<span style="color:var(--muted)">—</span>';
-  if(!match) return `<span class="ci">${fmt(inv)}</span><span class="cr">${fmt(rep)}</span>`;
-  return `<span>${fmt(inv)}</span>`;
 }
 
 function badgeByStatus(status){
@@ -580,10 +609,16 @@ function badgeByStatus(status){
   return '<span class="badge bmis">? לא נמצא</span>';
 }
 
+function pair(inv, rep, match, miss){
+  if(miss) return '<span style="color:var(--muted)">—</span>';
+  if(!match) return `<span class="ci">${fmt(inv)}</span><span class="cr">${fmt(rep)}</span>`;
+  return `<span>${fmt(inv)}</span>`;
+}
+
 function mkrow(l, errOnly){
   const miss = !l.found_in_report;
   const err = l.status !== 'תקין';
-  const disc = l.discrepancies.length ? l.discrepancies.map(d=>'• '+d).join('<br>') : '—';
+  const disc = l.discrepancies.length ? l.discrepancies.map(d => '• ' + d).join('<br>') : '—';
   const badge = badgeByStatus(l.status);
 
   const cells = `
@@ -600,7 +635,6 @@ function mkrow(l, errOnly){
     <td class="tnum">${miss ? '—' : fmt(l.total_report)}</td>
     ${errOnly ? `<td class="disc">${disc}</td>` : `<td>${badge}</td><td class="disc">${disc}</td>`}
   `;
-
   return `<tr class="${err ? 're' : ''}">${cells}</tr>`;
 }
 
@@ -628,17 +662,17 @@ function render(data){
      <div class="mi"><strong>${data.supplier || '—'}</strong>ספק</div>
      <div class="mi"><strong>${data.buyer || '—'}</strong>קונה</div>`;
 
-  document.getElementById('bAll').innerHTML = L.map(l => mkrow(l,false)).join('');
+  document.getElementById('bAll').innerHTML = L.map(l => mkrow(l, false)).join('');
 
   const eL = L.filter(l => l.status !== 'תקין');
   document.getElementById('noErr').style.display = eL.length ? 'none' : 'block';
   document.getElementById('errTw').style.display = eL.length ? 'block' : 'none';
-  document.getElementById('bErr').innerHTML = eL.map(l => mkrow(l,true)).join('');
+  document.getElementById('bErr').innerHTML = eL.map(l => mkrow(l, true)).join('');
 
   document.getElementById('divRes').style.display = 'block';
   document.getElementById('btnCsv').style.display = 'flex';
   document.getElementById('btnPrint').style.display = 'flex';
-  document.getElementById('divRes').scrollIntoView({behavior:'smooth', block:'start'});
+  document.getElementById('btnDbg').style.display = 'flex';
 }
 
 function exportCsv(){
@@ -646,19 +680,9 @@ function exportCsv(){
 
   const L = RES.lines || [];
   const H = [
-    'תעודה חשבונית',
-    'תעודה בדוח',
-    'תאריך',
-    'מוצר חשבונית',
-    'מוצר בדוח',
-    'משקל חשבונית',
-    'משקל בדוח',
-    'מחיר חשבונית',
-    'מחיר בדוח',
-    'סה"כ חשבונית',
-    'סה"כ בדוח',
-    'סטטוס',
-    'פירוט'
+    'תעודה חשבונית','תעודה בדוח','תאריך','מוצר חשבונית','מוצר בדוח',
+    'משקל חשבונית','משקל בדוח','מחיר חשבונית','מחיר בדוח',
+    'סה"כ חשבונית','סה"כ בדוח','סטטוס','פירוט'
   ];
 
   const rows = L.map(l => [
@@ -687,6 +711,20 @@ function exportCsv(){
   a.click();
 }
 
+function switchTab(t){
+  ['All','Err'].forEach(x => {
+    document.getElementById('t'+x).classList.toggle('on', x.toLowerCase() === t);
+    document.getElementById('p'+x).classList.toggle('on', x.toLowerCase() === t);
+  });
+}
+
+function toggleDebug(){
+  const el = document.getElementById('dbg');
+  if(!LAST_DEBUG) return;
+  el.textContent = LAST_DEBUG;
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
 async function run(){
   const dbgEl = document.getElementById('dbg');
   document.getElementById('divLoad').style.display = 'block';
@@ -697,38 +735,39 @@ async function run(){
 
   try{
     const [t1, t2] = await Promise.all([extractText(FILES[1]), extractText(FILES[2])]);
+
     const inv = parseInvoice(t1);
     const rep = parseReport(t2);
 
-    dbgEl.textContent =
+    LAST_DEBUG =
       `=== INVOICE (${inv.items.length} rows) ===\n` +
-      inv.items.slice(0,10).map(i=>JSON.stringify(i)).join('\n') +
+      inv.items.slice(0,10).map(i => JSON.stringify(i)).join('\n') +
       `\n\n=== REPORT (${rep.length} rows) ===\n` +
-      rep.slice(0,10).map(i=>JSON.stringify(i)).join('\n') +
-      `\n\n=== RAW REPORT TEXT SAMPLE ===\n` +
-      t2.slice(0,2500);
-
-    dbgEl.style.display = 'block';
+      rep.slice(0,15).map(i => JSON.stringify(i)).join('\n') +
+      `\n\n=== CLEANED REPORT SAMPLE ===\n` +
+      t2.split('\n').map(cleanPdfLine).slice(0,20).join('\n');
 
     if(inv.items.length === 0){
-      throw new Error(`לא נמצאו שורות בחשבונית (${inv.items.length}). בדוק debug למטה.`);
+      throw new Error(`לא נמצאו שורות בחשבונית (${inv.items.length})`);
     }
     if(rep.length === 0){
-      throw new Error(`לא נמצאו שורות בדוח (${rep.length}). בדוק debug למטה.`);
+      throw new Error(`לא נמצאו שורות בדוח (${rep.length})`);
     }
 
     render(compare(inv, rep));
-  }catch(e){
+  } catch(e){
     document.getElementById('divErr').style.display = 'block';
     document.getElementById('errMsg').textContent = e.message || 'שגיאה לא ידועה';
+    dbgEl.textContent = LAST_DEBUG || 'No debug available';
     dbgEl.style.display = 'block';
-  }finally{
+    document.getElementById('btnDbg').style.display = 'flex';
+  } finally{
     document.getElementById('divLoad').style.display = 'none';
     ready();
   }
 }
 
-[1,2].forEach(n=>{
+[1,2].forEach(n => {
   const c = document.getElementById('drop'+n);
   c.addEventListener('dragover', e => {
     e.preventDefault();
