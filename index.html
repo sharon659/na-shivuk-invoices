@@ -113,11 +113,11 @@
       <div class="hdr-s">נ.א. שיווק תוצרת חקלאית בע"מ | כלי בקרה פנימי</div>
     </div>
   </div>
-  <div class="hdr-v">v13.0</div>
+  <div class="hdr-v">v14.0</div>
 </header>
 
 <main class="main">
-  <div class="info-strip">✅ גרסה 13 — מנוע חילוץ חדש: קיבוץ שורות ב־Y עם סובלנות + הסרת שכבה כפולה + פרסר יציב לשתי התבניות</div>
+  <div class="info-strip">✅ גרסה 14 — תומך בריבוי ספקים (AGROLINE, בראשית). זיהוי אוטומטי של פורמט החשבונית, היפוך קבצים, התאמת תעודות עם תחילית ספרה (1627363 = 627363), וטיפול בשורות בסטטוס "פתוח"</div>
 
   <div class="upload-row">
     <div class="ucard" id="drop1" onclick="document.getElementById('f1').click()">
@@ -314,13 +314,42 @@ async function extractLines(file){
 // =========================================================================
 function parseNum(s){ return parseFloat(String(s).replace(/,/g,'')); }
 
-function parseInvoice(lines){
+// Strip grower business-name prefix from report's product field. Works generically:
+// "ד.חי שיווק תוצר פסיפלורה /ק" → "פסיפלורה /ק"
+// "בראשית אגש " ח בע תפוח סמיט / 75" → "תפוח סמיט / 75"
+function stripGrowerPrefix(s){
+  // Find LAST occurrence of any business-end marker; everything before it is the grower name
+  const markers = [
+    /\sאגש\s*"?\s*ח\s+בע\s+/g,
+    /\sאגש\s+בע\s*"?\s*מ\s+/g,
+    /\sאגודה\s+שיתופית\s+חקלאית\s+בע\s*"?\s*מ\s+/g,
+    /\sבע\s*"\s*מ\s+/g,
+    /\sבע"מ\s+/g,
+    /\sתוצרת\s+חקלאית\s+/g,
+    /\sשיווק\s+תוצר\s+/g,
+    /\sתוצר\s+/g,
+  ];
+  let bestEnd = 0;
+  const padded = ' ' + s;  // pad so leading match works
+  for(const re of markers){
+    let m;
+    while((m = re.exec(padded)) !== null){
+      bestEnd = Math.max(bestEnd, m.index + m[0].length - 1);
+    }
+  }
+  let out = bestEnd > 0 ? s.slice(bestEnd).replace(/^\s+/, '') : s;
+  // Legacy specific
+  out = out.replace(/^ד\s*\.?\s*חי\s+שיווק\s+תוצר\s*/, '');
+  return out.replace(/\s+/g, ' ').trim();
+}
+
+// --- Format A: AGROLINE / D.חי ---
+function parseInvoiceAgroline(lines){
   const items = [];
   let invoiceNo = '', invoiceDate = '';
 
   for(const line of lines){
     if(!invoiceNo){
-      // "No -32016" or "-32016 No" (RTL ordering produces the latter)
       const m = line.match(/No\s*[-–]?\s*(\d+)|[-–]\s*(\d+)\s+No\b/i);
       if(m) invoiceNo = m[1] || m[2];
     }
@@ -328,31 +357,114 @@ function parseInvoice(lines){
       const m = line.match(/תאריך\s+(\d{2}\/\d{2}\/\d{4})/);
       if(m) invoiceDate = m[1];
     }
-
-    // Data row anchor: date + 2 integers (note, asmachta) + product + qty + 3 decimals
     const m = line.match(/^(\d{2}\/\d{2}\/\d{4})\s+(\d+)\s+(\d+)\s+(.+?)\s+(\d+)\s+([\d,]+\.\d{2})\s+([\d,]+\.\d{2})\s+([\d,]+\.\d{2})\s*$/);
     if(!m) continue;
+    let product = m[4].trim().replace(/\s+(?:מגש\s+קרטון|מגש|קרטון|קרטונים|אריזה)\s*$/, '').trim();
+    items.push({source:'invoice', date:m[1], note:m[2], asmachta:m[3], product,
+      qty:parseInt(m[5],10), weight:parseNum(m[6]), price:parseNum(m[7]), total:parseNum(m[8]), matched:false});
+  }
+  return {invoiceNo, invoiceDate, supplier:'D.חי / AGROLINE', buyer:'נ.א. שיווק', items};
+}
 
-    // Strip packaging words from end of product
-    let product = m[4].trim()
-      .replace(/\s+(?:מגש\s+קרטון|מגש|קרטון|קרטונים|אריזה)\s*$/, '')
-      .trim();
+// --- Format B: בראשית ---
+function parseInvoiceBereshit(lines){
+  const items = [];
+  let invoiceNo = '', invoiceDate = '';
+  let currentNote = '', currentDate = '';
+  let prevDesc = '';
+  let pendingAfter = null;
 
-    items.push({
-      source:'invoice',
-      date:m[1],
-      note:m[2],
-      asmachta:m[3],
-      product,
-      qty:parseInt(m[5],10),
-      weight:parseNum(m[6]),
-      price:parseNum(m[7]),
-      total:parseNum(m[8]),
-      matched:false
-    });
+  const ROW_RE = /^(.*?)(\d+)\s+ק["״']ג\s+([\d,]+\.\d{2})\s+([\d,]+\.\d{2})\s+([\d,]+\.\d{2})\s*$/;
+  const NOTE_DATE_RE = /^(\d{6,7})\s+(\d{2}\.\d{2}\.\d{2})\s*(.*)$/;
+
+  function flushAfter(name){
+    if(pendingAfter){
+      if(name) pendingAfter.product = (name + ' ' + pendingAfter.product).trim().replace(/\s+/g,' ');
+      pendingAfter = null;
+    }
   }
 
-  return {invoiceNo, invoiceDate, supplier:'D.חי / AGROLINE', buyer:'נ.א. שיווק', items};
+  for(const line of lines){
+    if(!invoiceNo){
+      const m = line.match(/ח\s*ש\s*ב\s*ו\s*נ\s*י\s*ת\s+מ\s*ס\s+(\d+)/);
+      if(m) invoiceNo = m[1];
+    }
+    if(!invoiceDate){
+      const m = line.match(/ת\s*א\s*ר\s*י\s*ך\s+(\d{2}\.\d{2}\.\d{2})/);
+      if(m) invoiceDate = m[1];
+    }
+  }
+
+  let inTable = false;
+  for(const rawLine of lines){
+    const line = rawLine.trim();
+    if(!line) continue;
+
+    if(/ת\s*ע\s*ו\s*ד\s*ת\s+מ\s*ש\s*ל\s*ו\s*ח/.test(line) && /מ\s*ח\s*י\s*ר/.test(line) && /ס\s*כ\s*ו\s*ם/.test(line)){
+      inTable = true;
+      prevDesc = '';
+      continue;
+    }
+    if(!inTable) continue;
+    if(/סה\s*"?\s*כ\s+כללי/.test(line) || /^(הנחה|סה"כ לתשלום|מע"מ|לתשלום בש)/.test(line)){ flushAfter(''); break; }
+    if(/סה\s*"?\s*כ\s+למשלוח/.test(line)){ flushAfter(''); prevDesc = ''; continue; }
+
+    const m = line.match(ROW_RE);
+    if(m){
+      flushAfter('');
+      const prefixRaw = m[1].trim();
+      const pallets = parseInt(m[2], 10);
+      const price = parseNum(m[3]);
+      const qty = parseNum(m[4]);
+      const total = parseNum(m[5]);
+
+      let productInline = prefixRaw;
+      const nd = prefixRaw.match(NOTE_DATE_RE);
+      if(nd){
+        currentNote = nd[1];   // keep full note (e.g., 1627363) for display
+        currentDate = nd[2];
+        productInline = (nd[3] || '').trim();
+      }
+      const product = [prevDesc, productInline].filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
+      // Bereshit invoice notes have a leading prefix digit not present in the report
+      const noteAlt = currentNote.length >= 7 ? currentNote.slice(1) : currentNote;
+      const item = {source:'invoice', date:currentDate, note:currentNote, noteAlt, asmachta:'',
+        product, qty:pallets, weight:qty, price, total, matched:false};
+      items.push(item);
+      pendingAfter = item;
+      prevDesc = '';
+      continue;
+    }
+
+    // Non-data line → product description or "after" name
+    const isShort = line.split(/\s+/).length <= 2;
+    const isAlpha = /^[^\d]+$/.test(line);
+    if(pendingAfter && isShort && isAlpha){
+      flushAfter(line);
+      prevDesc = '';
+    } else {
+      flushAfter('');
+      prevDesc = (prevDesc + ' ' + line).trim().replace(/\s+/g,' ');
+    }
+  }
+  flushAfter('');
+
+  return {invoiceNo, invoiceDate, supplier:'בראשית', buyer:'נ.א. שיווק', items};
+}
+
+// --- Auto-detect and dispatch ---
+function parseInvoice(lines){
+  const joined = lines.join(' ');
+  const isAgroline = /AGROLINE|magicline|מגש\s+קרטון/i.test(joined);
+  const isBereshit = /בראשית|סה\s*"?\s*כ\s+למשלוח/.test(joined);
+
+  if(isBereshit && !isAgroline) return parseInvoiceBereshit(lines);
+  if(isAgroline) return parseInvoiceAgroline(lines);
+
+  // Unknown format — try both, return whichever found more
+  const a = parseInvoiceAgroline(lines);
+  const b = parseInvoiceBereshit(lines);
+  return a.items.length >= b.items.length ? a : b;
 }
 
 function parseReport(lines){
@@ -364,8 +476,10 @@ function parseReport(lines){
     if(line.includes('סה"כ לתעודה') || line.includes('סה"כ כללי') || line.includes('תא.תע')) continue;
     if(line.includes('כל סטטוסים') || /^[-=]{3,}/.test(line)) continue;
 
-    // Data row: date + note + grower_id + product/grower + qty(int) + decimals + mahsan(int) + status(letter)
-    const m = line.match(/^(\d{1,2}\/\d{2})\s+(\d+)\s+\d+\s+(.+?)\s+קר\s+(\d+)\s+(.+?)\s+(\d+)\s+([א-ת])\s*$/);
+    // Data row: date + note + grower_id + product/grower + qty(int) + decimals + [optional mahsan] + status(letter)
+    // Status 'ע'/'ס' = full row with price/total/mahsan
+    // Status 'פ' = pending row (no price/total/mahsan)
+    const m = line.match(/^(\d{1,2}\/\d{2})\s+(\d+)\s+\d+\s+(.+?)\s+קר\s+(\d+)\s+(.+?)\s+(?:(\d+)\s+)?([א-ת])\s*$/);
     if(!m) continue;
 
     const date = m[1];
@@ -373,12 +487,11 @@ function parseReport(lines){
     const productRaw = m[3].trim();
     const qty = parseInt(m[4], 10);
     const middle = m[5];
-    const mahsan = m[6];
+    const mahsan = m[6] || '';
     const status = m[7];
 
-    // Clean product: strip grower-name prefix
-    const product = productRaw
-      .replace(/^ד\s*\.?\s*חי\s+שיווק\s+תוצר\s*/, '')
+    // Clean product: strip grower-name/business prefix (works for any supplier)
+    const product = stripGrowerPrefix(productRaw)
       .replace(/\s+\/\s+/g, '/')
       .trim();
 
@@ -428,7 +541,7 @@ function parseReport(lines){
 // =========================================================================
 // STAGE 3: Matching
 // =========================================================================
-function almostEqual(a, b, pct=0.02, minAbs=0.01){
+function almostEqual(a, b, pct=0.005, minAbs=0.01){
   a = Number(a); b = Number(b);
   return Math.abs(a-b) <= Math.max(Math.abs(b)*pct, minAbs);
 }
@@ -452,13 +565,21 @@ function sameProduct(a, b){
   return common.length >= 2;
 }
 
+// Note equality — supports invoice's noteAlt (prefix-stripped) for bereshit format
+function noteEq(invItem, repItem){
+  if(invItem.note === repItem.note) return true;
+  if(invItem.noteAlt && invItem.noteAlt === repItem.note) return true;
+  return false;
+}
+
 function scoreCandidate(inv, rep){
   let s = 0;
-  if(inv.note === rep.note) s += 100;
-  if(almostEqual(inv.weight, rep.weight, 0.02, 0.5)) s += 20;
-  if(rep.price > 0 && almostEqual(inv.price, rep.price, 0.02, 0.1)) s += 20;
-  if(rep.total > 0 && almostEqual(inv.total, rep.total, 0.02, 1)) s += 30;
-  if(sameProduct(inv.product, rep.product)) s += 15;
+  if(noteEq(inv, rep)) s += 100;
+  // Strict tolerances for scoring — picks the MOST identical candidate
+  if(almostEqual(inv.weight, rep.weight, 0.005, 0.5)) s += 40;
+  if(rep.total > 0 && almostEqual(inv.total, rep.total, 0.005, 1)) s += 30;
+  if(sameProduct(inv.product, rep.product)) s += 20;
+  if(rep.price > 0 && almostEqual(inv.price, rep.price, 0.005, 0.05)) s += 15;
   return s;
 }
 
@@ -503,12 +624,14 @@ function compare(inv, rep){
 
     match.matched = true;
 
-    const weightMatch = almostEqual(match.weight, item.weight, 0.02, 0.5);
-    const priceMatch = match.price > 0 ? almostEqual(match.price, item.price, 0.02, 0.1) : true;
-    const totalMatch = match.total > 0 ? almostEqual(match.total, item.total, 0.02, 1) : true;
-    const noteMatch = match.note === item.note;
-    const priceMissing = match.price === 0;
-    const totalMissing = match.total === 0;
+    // STRICT tolerance for evaluation
+    const weightMatch = almostEqual(match.weight, item.weight, 0.005, 0.5);
+    // "Missing" only when invoice HAS a value but report has 0 (status פ rows have 0 in BOTH)
+    const priceMissing = match.price === 0 && item.price > 0;
+    const totalMissing = match.total === 0 && item.total > 0;
+    const priceMatch = match.price === 0 || almostEqual(match.price, item.price, 0.005, 0.05);
+    const totalMatch = match.total === 0 || almostEqual(match.total, item.total, 0.005, 1);
+    const noteMatch = noteEq(item, match);
 
     const discrepancies = [];
     let status = 'תקין';
@@ -696,10 +819,12 @@ async function run(){
     ]);
 
     // Auto-detect swapped files
-    const f1IsInvoice = invLines.some(l => /חשבון|פרופורמה|AGROLINE|פדיון|למע"מ/.test(l));
-    const f1IsReport = invLines.some(l => /דוח תעודות משלוח|סה"כ לתעודה|ניסן מחשבים/.test(l));
-    const f2IsInvoice = repLines.some(l => /חשבון|פרופורמה|AGROLINE|פדיון|למע"מ/.test(l));
-    const f2IsReport = repLines.some(l => /דוח תעודות משלוח|סה"כ לתעודה|ניסן מחשבים/.test(l));
+    const isInvoiceContent = l => /חשבון|פרופורמה|AGROLINE|פדיון|למע"מ|בראשית.*חקלאית|ח\s*ש\s*ב\s*ו\s*נ\s*י\s*ת/.test(l);
+    const isReportContent = l => /דוח תעודות משלוח|סה"כ לתעודה|ניסן מחשבים/.test(l);
+    const f1IsInvoice = invLines.some(isInvoiceContent);
+    const f1IsReport = invLines.some(isReportContent);
+    const f2IsInvoice = repLines.some(isInvoiceContent);
+    const f2IsReport = repLines.some(isReportContent);
 
     let invoiceLines = invLines, reportLines = repLines, swapped = false;
     if(f1IsReport && f2IsInvoice && !f1IsInvoice && !f2IsReport){
